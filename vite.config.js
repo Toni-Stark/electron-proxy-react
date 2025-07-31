@@ -40,6 +40,7 @@ export default defineConfig({
       }
     })
   ],
+  publicDir: path.resolve(projectRoot, 'src/renderer/assets'),
   server: {
     port: 3000,
     strictPort: true,
@@ -54,5 +55,15 @@ export default defineConfig({
   build: {
     outDir: path.resolve(projectRoot, 'dist/renderer'),
     emptyOutDir: true,
+    assetsDir: 'assets', // 静态资源（CSS、JS、图片）输出子目录
+    base: './', // 确保打包后资源路径为相对路径（关键）
+    rollupOptions: {
+      output: {
+        // 确保 chunk 文件输出到 assets 目录
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js'
+      }
+    }
   }
 })

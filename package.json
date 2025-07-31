@@ -24,7 +24,8 @@
     ],
     "win": {
       "target": "nsis",
-      "asar": true
+      "asar": true,
+      "icon": "src/renderer/assets/logo_256.ico"
     },
     "nsis": {
       "oneClick": false,
