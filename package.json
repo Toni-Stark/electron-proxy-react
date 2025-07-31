@@ -1,0 +1,51 @@
+{
+  "name": "drug_spider",
+  "version": "1.0.0",
+  "description": "药店020商圈调研工具",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build:vite": "vite build --outDir dist/renderer",
+    "build:electron": "electron-builder",
+    "build": "npm run build:vite && npm run build:electron",
+    "start": "electron ."
+  },
+  "build": {
+    "appId": "com.360zhishu.drug.spider",
+    "productName": "药店商圈调研工具",
+    "directories": {
+      "output": "release",
+      "app": "."
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "asar": true
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "asarUnpack": [
+      "dist/main/**/*",
+      "dist/renderer/**/*"
+    ]
+  },
+  "author": "Adolph",
+  "license": "ISC",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.4.0",
+    "concurrently": "^9.2.0",
+    "cross-env": "^10.0.0",
+    "electron": "^22.3.27",
+    "electron-builder": "^24.6.4",
+    "vite": "^4.4.9",
+    "vite-plugin-electron": "^0.29.0",
+    "vue": "^3.3.4",
+    "wait-on": "^8.0.4"
+  }
+}
