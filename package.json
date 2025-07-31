@@ -40,8 +40,6 @@
   "license": "ISC",
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.4.0",
-    "concurrently": "^9.2.0",
-    "cross-env": "^10.0.0",
     "electron": "^22.3.27",
     "electron-builder": "^24.6.4",
     "vite": "^4.4.9",
