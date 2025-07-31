@@ -1,6 +1,7 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const url = require('url')
+const { startProxy, stopProxy, isProxyRunning, getPort } = require('./component/proxy/anyproxy.js')
 
 // 保持对窗口对象的全局引用，如果不这样做，当JavaScript对象被垃圾回收时，窗口将自动关闭
 let mainWindow
@@ -40,6 +41,22 @@ function createWindow() {
     // 与此同时，你应该删除相应的元素
     mainWindow = null
   })
+
+  // 代理控制 IPC 通信
+  ipcMain.handle('proxy:start', async () => {
+    return await startProxy()
+  })
+
+  ipcMain.handle('proxy:stop', () => {
+    return stopProxy()
+  })
+
+  ipcMain.handle('proxy:status', () => {
+    return {
+      running: isProxyRunning(),
+      port: getPort()
+    }
+  })
 }
 
 // Electron 会在初始化后并准备好创建浏览器窗口时调用这个函数
@@ -56,3 +73,4 @@ app.on('activate', function () {
   // 在 macOS 上，当点击 dock 图标并且没有其他窗口打开时，通常会重新创建一个窗口
   if (mainWindow === null) createWindow()
 })
+

@@ -2,8 +2,11 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
 import path from 'path'
+import glob from 'glob'
 
 const projectRoot = __dirname
+
+const mainFiles = glob.sync('src/main/**/**/*.js', { cwd: projectRoot})
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,7 +18,24 @@ export default defineConfig({
       // 配置Electron打包选项
       vite: {
         build: {
-          outDir: path.resolve(projectRoot, 'dist/main')
+          outDir: path.resolve(projectRoot, 'dist/main'),
+          rollupOptions: {
+            input: {
+              main: path.resolve (projectRoot, 'src/main/main.js'),
+              ...mainFiles.reduce((obj, file) => {
+                // 为每个文件生成唯一键（如 "proxy"、"proxyRules"）
+                const name = file.replace('src/main/', '').replace('.js', '')
+                console.log(file)
+                console.log(obj)
+                obj[name] = path.resolve(projectRoot, file)
+                return obj
+              }, {})
+            },
+            output: {
+              entryFileNames: '[name].js',
+              chunkFileNames: '[name].js'
+            }
+          },
         }
       }
     }),
