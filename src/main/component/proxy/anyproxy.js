@@ -4,17 +4,20 @@ const fs = require('fs')
 const rule = require('./rule')
 const osProxy = require('cross-os-proxy')
 const os = require('os')
+const { exec } = require('child_process')
 
 // 代理配置
 // 这里的rule文件. 最好能直接加载进来. 
 const proxyConfig = {
   port: 16888, // 代理端口
   enableHttps: true, // 启用 HTTPS 拦截
+  forceProxyHttps: true,
   rule: rule, // 代理规则文件路径
   dbPath: path.join(__dirname, '../proxyDB'), // 缓存路径
   webInterface: {
     enable: false, // 启用 Web 控制台
-  }
+  },
+  wsIntercept: false,
 }
 
 // 确保证书目录存在
@@ -28,6 +31,10 @@ function ensureCertDir() {
 // 生成默认证书（首次运行需要）
 async function generateDefaultCert() {
   try {
+    if(AnyProxy.utils.certMgr.ifRootCAFileExists()) {
+      return
+    }
+
     await AnyProxy.utils.certMgr.generateRootCA((error, keyPath) => {
       // let users to trust this CA before using proxy
       if (!error) {

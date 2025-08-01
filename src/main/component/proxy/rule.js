@@ -11,13 +11,17 @@ module.exports = {
         requestOptions: newRequestOptions
       }
     }
-    return null
+    return {
+      requestOptions: requestDetail.requestOptions
+    }
   },
 
   // 拦截响应
   beforeSendResponse(requestDetail, responseDetail) {
     // 示例：修改 JSON 响应
-    console.lof(responseDetail)
+    console.log("=================== response detail =====================")
+    console.log(responseDetail.response.body.toString())
+    // 这里只负责解析指定的数据信息. 其他不管. 例如只解析京东的数据.
     if (requestDetail.url.includes('api.example.com')) {
       const newResponse = responseDetail.response
       try {
@@ -32,7 +36,9 @@ module.exports = {
         // 非 JSON 响应不处理
       }
     }
-    return null
+    return {
+      response: responseDetail.response
+    }
   },
 
   // 拦截 WebSocket

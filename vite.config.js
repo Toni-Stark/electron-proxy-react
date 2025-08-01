@@ -25,8 +25,6 @@ export default defineConfig({
               ...mainFiles.reduce((obj, file) => {
                 // 为每个文件生成唯一键（如 "proxy"、"proxyRules"）
                 const name = file.replace('src/main/', '').replace('.js', '')
-                console.log(file)
-                console.log(obj)
                 obj[name] = path.resolve(projectRoot, file)
                 return obj
               }, {})
