@@ -25,7 +25,7 @@
         </button>
       </div>
       <div class="tips" v-if="!status.running">
-        提示: 启动后需要将系统代理设置为 127.0.0.1:{{ status.port }} 才能生效
+        提示，如果启动后，无法获取请求，请检查端口占用情况。
       </div>
     </div>
   </div>
@@ -57,7 +57,7 @@ const handleStart = async () => {
     alert('代理启动成功')
     updateStatus()
   } else {
-    alert('代理启动失败，请查看控制台日志')
+    alert('代理启动失败，已经存在其他程序占用此服务....')
   }
 }
 

@@ -3,11 +3,12 @@ const path = require('path')
 const fs = require('fs')
 const rule = require('./rule')
 const osProxy = require('cross-os-proxy')
+const os = require('os')
 
 // 代理配置
 // 这里的rule文件. 最好能直接加载进来. 
 const proxyConfig = {
-  port: 8889, // 代理端口
+  port: 16888, // 代理端口
   enableHttps: true, // 启用 HTTPS 拦截
   rule: rule, // 代理规则文件路径
   dbPath: path.join(__dirname, '../proxyDB'), // 缓存路径
@@ -18,11 +19,10 @@ const proxyConfig = {
 
 // 确保证书目录存在
 function ensureCertDir() {
-  // console.log(AnyProxy.utils)
-  // const certDir = path.join(AnyProxy.utils.getUserHome(), '.anyproxy/certificates')
-  // if (!fs.existsSync(certDir)) {
-  //   fs.mkdirSync(certDir, { recursive: true })
-  // }
+  const certDir = path.join(os.homedir(), '.anyproxy/certificates')
+  if (!fs.existsSync(certDir)) {
+    fs.mkdirSync(certDir, { recursive: true })
+  }
 }
 
 // 生成默认证书（首次运行需要）
