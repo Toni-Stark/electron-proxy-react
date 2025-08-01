@@ -57,7 +57,19 @@ module.exports = {
     // 这里开始保存. 可以放到另外一个地方了. 后面来看. @todo
     console.log('=============================================================')
     console.log(requestDetail.url)
-    console.log(responseDetail.response.body.toString())
+    const QueueList = require('../../models/queue_list')
+    QueueList.create({
+      queue_name: 'crawl_data',
+      // 保存所有的data数据. 后面看逻辑怎么操作了.
+      data: JSON.stringify({
+        'url': requestDetail.url,
+        'body': responseDetail.response.body.toString(),
+        'header': headers
+      }),
+      status: -2
+    }).then(() => {
+      console.log('数据保存成功')
+    })
     return {
       response: responseDetail.response
     }

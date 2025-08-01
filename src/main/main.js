@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 const path = require('path')
 const url = require('url')
 const { startProxy, stopProxy, isProxyRunning, getPort } = require('./component/proxy/anyproxy.js')
@@ -17,6 +17,8 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js') // 预加载脚本路径
     }
   })
+
+  Menu.setApplicationMenu(null)
 
   // 加载应用
   // 在开发环境下加载 Vite 开发服务器
