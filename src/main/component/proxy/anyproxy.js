@@ -2,6 +2,7 @@ const AnyProxy = require('anyproxy')
 const path = require('path')
 const fs = require('fs')
 const rule = require('./rule')
+const osProxy = require('cross-os-proxy')
 
 // 代理配置
 // 这里的rule文件. 最好能直接加载进来. 
@@ -42,7 +43,7 @@ async function generateDefaultCert() {
         console.error('error when generating rootCA', error);
       }
     })
-    console.log('AnyProxy 根证书生成成功，请信任该证书以支持 HTTPS 拦截')
+    console.log('AnyProxy root cert succssed')
   } catch (e) {
     console.error('证书生成失败:', e)
   }
@@ -54,7 +55,7 @@ let proxyServer = null
 // 启动代理
 async function startProxy() {
   if (proxyServer) {
-    console.log('代理已在运行')
+    console.log('AnyProxy is running')
     return true
   }
 
@@ -64,8 +65,9 @@ async function startProxy() {
     
     proxyServer = new AnyProxy.ProxyServer(proxyConfig)
     
-    proxyServer.on('ready', () => {
-      console.log(`AnyProxy 启动成功，端口: ${proxyConfig.port}`)
+    proxyServer.on('ready', async () => {
+      console.log(`AnyProxy start success, port: ${proxyConfig.port}`)
+      await osProxy.setProxy('127.0.0.1', proxyConfig.port)
     })
     
     proxyServer.on('error', (e) => {
@@ -76,20 +78,23 @@ async function startProxy() {
     proxyServer.start()
     return true
   } catch (e) {
-    console.error('启动代理失败:', e)
+    console.error('start proxy fail:', e)
     return false
   }
 }
 
 // 停止代理
-function stopProxy() {
+async function stopProxy() {
+  // 强制关闭的时候 也走代理一下 去清理一下服务
+  await osProxy.closeProxy()
   if (proxyServer) {
     proxyServer.close()
     proxyServer = null
-    console.log('AnyProxy 已停止')
+    console.log('AnyProxy stopped')
     return true
   }
-  console.log('代理未在运行')
+
+  console.log('AnyProxy is not running')
   return false
 }
 

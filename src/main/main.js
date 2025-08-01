@@ -36,10 +36,11 @@ function createWindow() {
   }
 
   // 当窗口关闭时触发
-  mainWindow.on('closed', function () {
+  mainWindow.on('closed', async() => {
     // 取消引用窗口对象，如果你的应用支持多窗口，通常会把多个窗口存储在一个数组里
     // 与此同时，你应该删除相应的元素
     mainWindow = null
+    await stopProxy()
   })
 
   // 代理控制 IPC 通信
@@ -47,8 +48,8 @@ function createWindow() {
     return await startProxy()
   })
 
-  ipcMain.handle('proxy:stop', () => {
-    return stopProxy()
+  ipcMain.handle('proxy:stop', async () => {
+    return await stopProxy()
   })
 
   ipcMain.handle('proxy:status', () => {

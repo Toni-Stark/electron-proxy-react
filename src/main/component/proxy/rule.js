@@ -2,6 +2,7 @@
 module.exports = {
   // 拦截请求
   beforeSendRequest(requestDetail) {
+    console.log(requestDetail.url)
     // 示例：修改所有百度请求的 User-Agent
     if (requestDetail.url.includes('baidu.com')) {
       const newRequestOptions = requestDetail.requestOptions
