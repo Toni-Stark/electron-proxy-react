@@ -1,10 +1,20 @@
 // anyproxy的规则文件.
 function isCrawlHost(host) {
-  const domains = ['meituan.com', 'ele.me', 'meituan.net']
+  const domains = {
+    'meituan': [
+      'meituan.com',
+      'meituan.net',  
+    ],
+    'eleme': [
+      'ele.me'
+    ],
+  }
 
-  for(let k in domains) {
-    if(host.indexOf(domains[k]) > -1) {
-      return true
+  for(let platform in domains) {
+    for(let idx in domains[platform]) {
+      if(host.indexOf(domains[platform][idx]) > -1) {
+        return platform
+      }
     }
   }
 
@@ -31,7 +41,8 @@ module.exports = {
   beforeSendResponse(requestDetail, responseDetail) {
     // 这里可以只获取指定的json地址就可以了.
     const link_info = new URL(requestDetail.url)
-    if(!isCrawlHost(link_info.host)) {
+    const platform = isCrawlHost(link_info.host)
+    if(!platform) {
       return {
         response: responseDetail.response
       }
@@ -59,6 +70,7 @@ module.exports = {
     console.log(requestDetail.url)
     const QueueList = require('../../models/queue_list')
     QueueList.create({
+      platform: platform,
       queue_name: 'crawl_data',
       // 保存所有的data数据. 后面看逻辑怎么操作了.
       data: JSON.stringify({

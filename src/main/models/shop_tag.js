@@ -2,45 +2,58 @@ const { DataTypes } = require('sequelize')
 const { sequelize } = require('../component/db/connection')
 
 // 完成基础定义. 后面来看一下.
-const QueueList = sequelize.define('QueueList', {
+const ShopTag = sequelize.define('ShopTag', {
   id: {
     type: DataTypes.INTEGER,       // SQLite 自增列需使用 INTEGER 类型
     primaryKey: true,              // 设为主键
     autoIncrement: true,           // 启用自增
-    comment: '任务队列id'
+    comment: '自增id'
   },
   platform: {
     type: DataTypes.STRING,
     comment: '所属平台',
     allowNull: false
   },
-  queue_name: {
+  third_id: {
     type: DataTypes.STRING,
-    comment: '队列名',
-    allowNull: false
-  },
-  data: {
-    type: DataTypes.TEXT,
+    comment: '店铺三方id',
     allowNull: false,
-    comment: '抓取数据'
+    defaultValue: ''
   },
-  status: {
-    type: DataTypes.INTEGER,
+  brand_id: {
+    type: DataTypes.STRING,
+    comment: '品牌id',
     allowNull: false,
-    defaultValue: -2,
-    comment: '状态, -2待执行'
+    defaultValue: ''
   },
-  
+  spu_id: {
+    type: DataTypes.STRING,
+    comment: 'SpuId',
+    allowNull: false,
+    defaultValue: ''
+  },
+  tag: {
+    type: DataTypes.STRING,
+    comment: 'Tag',
+    allowNull: false,
+    defaultValue: '',
+  },
+  tag_text: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    comment: 'Tag文本',
+    defaultValue: '',
+  },
 }, {
   // 表名.
-  tableName: 'queue_list',
+  tableName: 'shop_tag',
   // 开启自定义时间.
   timestamps: true
 })
 
 // 引入自动同步表. 且不删除表.
 sequelize.sync({force:false}).then(() => {
-  console.log('queue_list')
+  console.log('shop_tag')
 })
 
-export default QueueList
+export default ShopTag
