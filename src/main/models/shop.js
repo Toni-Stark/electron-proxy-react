@@ -32,6 +32,12 @@ const Shop = sequelize.define('Shop', {
     allowNull: false,
     defaultValue: '',
   },
+  logo: {
+    type: DataTypes.STRING,
+    comment: '店铺图片地址',
+    allowNull: false,
+    defaultValue: '',
+  },
   address: {
     type: DataTypes.STRING,
     allowNull: false,

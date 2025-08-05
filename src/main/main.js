@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 const path = require('path')
 const url = require('url')
+const jobs = require('./jobs.js')
 const { startProxy, stopProxy, isProxyRunning, getPort } = require('./component/proxy/anyproxy.js')
 
 // 保持对窗口对象的全局引用，如果不这样做，当JavaScript对象被垃圾回收时，窗口将自动关闭
@@ -44,6 +45,8 @@ function createWindow() {
     mainWindow = null
     await stopProxy()
   })
+
+  jobs()
 
   // 代理控制 IPC 通信
   ipcMain.handle('proxy:start', async () => {

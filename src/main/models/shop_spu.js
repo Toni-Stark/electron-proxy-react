@@ -20,12 +20,6 @@ const ShopSpu = sequelize.define('ShopSpu', {
     allowNull: false,
     defaultValue: ''
   },
-  brand_id: {
-    type: DataTypes.STRING,
-    comment: '品牌id',
-    allowNull: false,
-    defaultValue: ''
-  },
   spu_id: {
     type: DataTypes.STRING,
     comment: 'SpuId',
@@ -77,6 +71,12 @@ const ShopSpu = sequelize.define('ShopSpu', {
     type: DataTypes.STRING,
     allowNull: false,
     comment: 'Tag',
+    defaultValue: '',
+  },
+  categroys: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    comment: '分类',
     defaultValue: '',
   },
 }, {

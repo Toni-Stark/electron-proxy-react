@@ -30,7 +30,7 @@ module.exports = {
         requestOptions: requestDetail.requestOptions
       }
     }
-
+    // console.log(requestDetail.requestData.toString())
     // 这里可以增加一些其他的东西过来. 例如使用的哪个代理撒的. 先不管吧. 我们只是拦截其他的网络请求而已.
     return {
       requestOptions: requestDetail.requestOptions
@@ -69,6 +69,9 @@ module.exports = {
     console.log('=============================================================')
     console.log(requestDetail.url)
     const QueueList = require('../../models/queue_list')
+
+    // 某些固定的url 需要获取request里面的请求数据. 由于某些不是标准的. 所以我们这里先抓取指定的连接用来做对应的数据信息.
+    // 这里要注意以下. 如果某些可以转成字符串的. 就可以先行转换以下. 必须要拿到请求的参数. 用来判断是哪一个店.
     QueueList.create({
       platform: platform,
       queue_name: 'crawl_data',
@@ -76,7 +79,9 @@ module.exports = {
       data: JSON.stringify({
         'url': requestDetail.url,
         'body': responseDetail.response.body.toString(),
-        'header': headers
+        'resp_headers': headers,
+        'req_headers': requestDetail.requestOptions.headers,
+        'req_params': requestDetail.requestData.toString()
       }),
       status: -2
     }).then(() => {

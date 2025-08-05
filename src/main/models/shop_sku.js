@@ -20,12 +20,6 @@ const ShopSku = sequelize.define('ShopSku', {
     allowNull: false,
     defaultValue: ''
   },
-  brand_id: {
-    type: DataTypes.STRING,
-    comment: '品牌id',
-    allowNull: false,
-    defaultValue: ''
-  },
   spu_id: {
     type: DataTypes.STRING,
     comment: 'SpuId',
@@ -117,4 +111,4 @@ sequelize.sync({force:false}).then(() => {
   console.log('shop_sku')
 })
 
-export default ShopSpu
+export default ShopSku

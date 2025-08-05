@@ -20,18 +20,6 @@ const ShopTag = sequelize.define('ShopTag', {
     allowNull: false,
     defaultValue: ''
   },
-  brand_id: {
-    type: DataTypes.STRING,
-    comment: '品牌id',
-    allowNull: false,
-    defaultValue: ''
-  },
-  spu_id: {
-    type: DataTypes.STRING,
-    comment: 'SpuId',
-    allowNull: false,
-    defaultValue: ''
-  },
   tag: {
     type: DataTypes.STRING,
     comment: 'Tag',
@@ -44,6 +32,12 @@ const ShopTag = sequelize.define('ShopTag', {
     comment: 'Tag文本',
     defaultValue: '',
   },
+  sequence: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    comment: '排序号',
+    defaultValue: ''
+  }
 }, {
   // 表名.
   tableName: 'shop_tag',
