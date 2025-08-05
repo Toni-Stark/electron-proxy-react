@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import react from '@vitejs/plugin-react'
 import electron from 'vite-plugin-electron'
 import path from 'path'
 import glob from 'glob'
@@ -10,8 +10,12 @@ const mainFiles = glob.sync('src/main/**/**/*.js', { cwd: projectRoot})
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    // 模拟 Node.js 的 global 变量
+    'global': 'window',
+  },
   plugins: [
-    vue(),
+    react(),
     electron({
       // 使用绝对路径确保正确定位主进程文件
       entry: path.resolve(projectRoot, 'src/main/main.js'),

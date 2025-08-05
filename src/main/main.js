@@ -10,8 +10,8 @@ let mainWindow
 function createWindow() {
   // 创建浏览器窗口
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 700,
     webPreferences: {
       nodeIntegration: false, // Electron 12+ 默认禁用
       contextIsolation: true, // 启用上下文隔离
