@@ -50,12 +50,28 @@ class Sidebar extends Component {
                     </Menu.Item>
 
                     <SubMenu
+                        key="store"
+                        title={
+                            <span>
+                                <Icon type="shop" />
+                                <span>店铺调研</span>
+                            </span>
+                        }
+                    >
+                        <Menu.Item key="meituan">
+                            <Link to="/meituan">美团</Link>
+                        </Menu.Item>
+                        <Menu.Item key="eleme">
+                            <Link to="/eleme">饿了么</Link>
+                        </Menu.Item>
+                    </SubMenu>
+                    <SubMenu
                         key="user"
                         title={
                             <span>
-                <Icon type="user" />
-                <span>用户管理</span>
-              </span>
+                                <Icon type="user" />
+                                <span>用户管理</span>
+                            </span>
                         }
                     >
                         <Menu.Item key="user-list">

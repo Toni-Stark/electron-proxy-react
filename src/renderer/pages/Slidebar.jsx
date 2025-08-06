@@ -31,23 +31,23 @@ class Sidebar extends Component {
         onCollapse={this.onCollapse}
       >
         {/* 系统标题 */}
-        <div style={{ 
-          height: '32px', 
-          background: 'rgba(255,255,255,.2)', 
-          margin: '16px', 
-          textAlign: 'center', 
-          lineHeight: '32px', 
-          color: '#fff' 
+        <div style={{
+          height: '32px',
+          background: 'rgba(255,255,255,.2)',
+          margin: '16px',
+          textAlign: 'center',
+          lineHeight: '32px',
+          color: '#fff'
         }}>
           管理系统
         </div>
-        
+
         {/* 菜单列表 */}
-        <Menu 
-          theme="dark" 
+        <Menu
+          theme="dark"
           current={this.state.current}
           onClick={this.handleClick}
-          defaultSelectedKeys={['1']} 
+          defaultSelectedKeys={['1']}
           mode="inline"
         >
           <Menu.Item key="1">
@@ -55,7 +55,7 @@ class Sidebar extends Component {
             <span>仪表盘</span>
             <Link to="/" />
           </Menu.Item>
-          
+
           <SubMenu
             key="sub1"
             title={
@@ -76,7 +76,7 @@ class Sidebar extends Component {
               <Link to="/users/add" />
             </Menu.Item>
           </SubMenu>
-          
+
           <Menu.Item key="4">
             <Icon type="setting" />
             <span>系统设置</span>

@@ -16,7 +16,7 @@ class Setting extends Component {
     openProxy: false
   }
   updateStatus = async () => {
-    const current = await window.proxyAPI.getStatus()
+    const current = await window.drugApi.getStatus()
     console.log('当前代理状态: ', current)
     this.setState({
       running: current.running,
@@ -40,7 +40,7 @@ class Setting extends Component {
       console.log(`${key} 已更新为:`, value);
       if(key === 'openProxy'){
         if(value){
-          const success = await window.proxyAPI.start()
+          const success = await window.drugApi.start()
           if (success) {
             openMessage('success', '代理启动成功')
             await this.updateStatus()
@@ -48,7 +48,7 @@ class Setting extends Component {
             openMessage('error', '代理启动失败，请查看控制台日志')
           }
         } else {
-          const success = await window.proxyAPI.stop()
+          const success = await window.drugApi.stop()
           if (success) {
             openMessage('info', '代理已停止')
             await this.updateStatus()

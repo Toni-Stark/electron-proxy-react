@@ -9,6 +9,8 @@ import NotFound from './pages/NotFound';
 import UserAdd from "./pages/UserAdd";
 import {getToken, removeToken} from './utils/auth'
 import Login from "./pages/Login";
+import EleList from "./pages/ElemeList";
+import MeiTuanList from "./pages/MeiTuanList";
 
 const { Content, Footer, Header } = Layout;
 
@@ -96,9 +98,12 @@ class App extends Component {
             {/* 路由配置 */}
             <Switch>
               <Route exact path="/" component={Dashboard} />
-              <Route path="/users" component={UserList} />
               <Route path="/users/add" component={UserAdd} />
+              <Route path="/users" component={UserList} />
+              <Route path="/meituan" component={MeiTuanList} />
+              <Route path="/eleme" component={EleList} />
               <Route path="/settings" component={Setting} />
+              <Redirect from="/login" to="/" />
               <Route component={NotFound} />
             </Switch>
           </Content>
