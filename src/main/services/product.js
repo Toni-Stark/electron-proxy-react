@@ -1,5 +1,3 @@
-import { Platform } from 'electron-builder'
-
 const ShopSpu = require('../models/shop_spu')
 const Shop = require('../models/shop')
 const ShopSku = require('../models/shop_sku')

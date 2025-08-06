@@ -9,32 +9,26 @@ import NotFound from './pages/NotFound';
 import UserAdd from "./pages/UserAdd";
 import {getToken, removeToken} from './utils/auth'
 import Login from "./pages/Login";
+import EleList from "./pages/ElemeList";
+import MeiTuanList from "./pages/MeiTuanList";
 
 const { Content, Footer, Header } = Layout;
 
 class App extends Component {
   state = {
     loading: false,
-    isAuthenticated: !!getToken(),
-    refresh: false
+    isAuthenticated: !!getToken()
   };
   // 登录状态变更处理
   handleAuthChange = (isAuthenticated) => {
     this.setState({ isAuthenticated });
   };
-  refreshFun = () => {
-    this.setState({ refresh: true });
-    setTimeout(()=>{
-      message.success('刷新成功');
-      this.setState({ refresh: false });
-    },2000)
-  }
   getOut = () => {
     removeToken()
     this.setState({ isAuthenticated: !!getToken() })
   }
   render() {
-    const { isAuthenticated, loading, refresh } = this.state;
+    const { isAuthenticated, loading } = this.state;
 
     if (loading) {
       return (
@@ -67,15 +61,7 @@ class App extends Component {
         <Layout>
           <Header value={Header} style={{height: 50, padding: 0}}>
             <div style={flexEnd}>
-              <Button
-                  style={btnStyle}
-                  type="default"
-                  block
-                  loading={refresh}
-                  onClick={this.refreshFun}
-              >
-                刷新
-              </Button>
+
               <Button
                   style={btnStyle}
                   type="default"
@@ -88,17 +74,20 @@ class App extends Component {
             </div>
           </Header>
           <Content style={{
-            margin: '24px 16px',
-            padding: 24,
+            margin: '16px',
+            padding: '16px',
             background: '#fff',
             minHeight: 280
           }}>
             {/* 路由配置 */}
             <Switch>
               <Route exact path="/" component={Dashboard} />
-              <Route path="/users" component={UserList} />
               <Route path="/users/add" component={UserAdd} />
+              <Route path="/users" component={UserList} />
+              <Route path="/meituan" component={MeiTuanList} />
+              <Route path="/eleme" component={EleList} />
               <Route path="/settings" component={Setting} />
+              <Redirect from="/login" to="/" />
               <Route component={NotFound} />
             </Switch>
           </Content>

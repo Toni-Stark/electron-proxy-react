@@ -82,7 +82,7 @@ class Setting extends Component {
             </FormItem>
 
             <div style={tips}>
-              提示: 启动后需要将系统代理设置为 127.0.0.1:{port} 才能生效
+              提示: 启动后需要将代理设置为 127.0.0.1:{port} 才能生效
             </div>
           </div>
         </Form>

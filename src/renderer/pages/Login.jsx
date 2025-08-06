@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Icon , Button, message, Input, Avatar} from 'antd';
 import { setToken } from '../utils/auth';
+import '../styles/Login.css'
 class Login extends Component {
     state = {
         token: ''
@@ -29,14 +30,14 @@ class Login extends Component {
     render() {
         const {token,loading} = this.state;
         return (
-            <div style={{...flexCenter, height: '100vh'}}>
+            <div style={{...flexCenter}} className="bg_style">
                 <div style={{marginTop: '20vh', minWidth: 350}}>
                     <div style={flexCenter}>
                         <Avatar
                             size={100}
                             icon="user"
                         />
-                        <h2 style={{ marginTop: 16 }}>Token 登录</h2>
+                        <h2 style={{ marginTop: 16, zIndex: 3 }}>Token 登录</h2>
                     </div>
 
                     <Input
