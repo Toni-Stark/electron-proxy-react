@@ -17,6 +17,7 @@ class Setting extends Component {
   }
   updateStatus = async () => {
     const current = await window.proxyAPI.getStatus()
+    console.log('当前代理状态: ', current)
     this.setState({
       running: current.running,
       port: current.port,
@@ -82,7 +83,7 @@ class Setting extends Component {
             </FormItem>
 
             <div style={tips}>
-              提示: 启动后需要将系统代理设置为 127.0.0.1:{port} 才能生效
+              提示: 启动后需要将代理设置为 127.0.0.1:{port} 才能生效
             </div>
           </div>
         </Form>

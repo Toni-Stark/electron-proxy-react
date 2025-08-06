@@ -1,0 +1,17 @@
+.bg_style {
+    height: 100vh;
+    position: relative;
+    overflow: hidden; /* 防止内容溢出 */
+    background: #f2f2f2
+}
+.bg_style::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #c7c7c712;
+    backdrop-filter: blur(5px); /* 添加模糊效果 */
+    z-index: 0; /* 确保蒙层在内容之下 */
+}
