@@ -65,22 +65,22 @@ class Sidebar extends Component {
                             <Link to="/eleme">饿了么</Link>
                         </Menu.Item>
                     </SubMenu>
-                    <SubMenu
-                        key="user"
-                        title={
-                            <span>
-                                <Icon type="user" />
-                                <span>用户管理</span>
-                            </span>
-                        }
-                    >
-                        <Menu.Item key="user-list">
-                            <Link to="/users">用户列表</Link>
-                        </Menu.Item>
-                        <Menu.Item key="user-add">
-                            <Link to="/users/add">添加用户</Link>
-                        </Menu.Item>
-                    </SubMenu>
+                    {/*<SubMenu*/}
+                    {/*    key="user"*/}
+                    {/*    title={*/}
+                    {/*        <span>*/}
+                    {/*            <Icon type="user" />*/}
+                    {/*            <span>用户管理</span>*/}
+                    {/*        </span>*/}
+                    {/*    }*/}
+                    {/*>*/}
+                    {/*    <Menu.Item key="user-list">*/}
+                    {/*        <Link to="/users">用户列表</Link>*/}
+                    {/*    </Menu.Item>*/}
+                    {/*    <Menu.Item key="user-add">*/}
+                    {/*        <Link to="/users/add">添加用户</Link>*/}
+                    {/*    </Menu.Item>*/}
+                    {/*</SubMenu>*/}
 
                     <Menu.Item key="settings">
                         <Link to="/settings">
