@@ -1,17 +1,63 @@
 import React, { Component } from 'react';
-import { Layout } from 'antd';
-import { Route, Switch } from 'react-router-dom';
+import {Button, Layout, message, Spin} from 'antd';
+import {Redirect, Route, Switch} from 'react-router-dom';
 import Sidebar from './components/Sidebar/index';
 import Dashboard from './pages/Dashboard';
 import UserList from './pages/UserList';
 import Setting from './pages/Setting';
 import NotFound from './pages/NotFound';
 import UserAdd from "./pages/UserAdd";
+import {getToken, removeToken} from './utils/auth'
+import Login from "./pages/Login";
 
-const { Content, Footer } = Layout;
+const { Content, Footer, Header } = Layout;
 
 class App extends Component {
+  state = {
+    loading: false,
+    isAuthenticated: !!getToken(),
+    refresh: false
+  };
+  // 登录状态变更处理
+  handleAuthChange = (isAuthenticated) => {
+    this.setState({ isAuthenticated });
+  };
+  refreshFun = () => {
+    this.setState({ refresh: true });
+    setTimeout(()=>{
+      message.success('刷新成功');
+      this.setState({ refresh: false });
+    },2000)
+  }
+  getOut = () => {
+    removeToken()
+    this.setState({ isAuthenticated: !!getToken() })
+  }
   render() {
+    const { isAuthenticated, loading, refresh } = this.state;
+
+    if (loading) {
+      return (
+          <div style={flexFull}>
+            <Spin size="large" />
+          </div>
+      );
+    }
+
+    if (!isAuthenticated) {
+      return (
+          <Switch>
+            <Route
+                path="/login"
+                render={(props) => (
+                    <Login {...props} onAuthChange={this.handleAuthChange} />
+                )}
+            />
+            <Redirect to="/login" />
+          </Switch>
+      );
+    }
+
     return (
       <Layout style={{ minHeight: '100vh' }}>
         {/* 左侧菜单 */}
@@ -19,6 +65,28 @@ class App extends Component {
 
         {/* 右侧内容区 */}
         <Layout>
+          <Header value={Header} style={{height: 50, padding: 0}}>
+            <div style={flexEnd}>
+              <Button
+                  style={btnStyle}
+                  type="default"
+                  block
+                  loading={refresh}
+                  onClick={this.refreshFun}
+              >
+                刷新
+              </Button>
+              <Button
+                  style={btnStyle}
+                  type="default"
+                  block
+                  icon="poweroff"
+                  onClick={this.getOut}
+              >
+                退出登录
+              </Button>
+            </div>
+          </Header>
           <Content style={{
             margin: '24px 16px',
             padding: 24,
@@ -47,3 +115,18 @@ class App extends Component {
 }
 
 export default App;
+
+const flexFull = { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }
+const btnStyle = {
+  width: '100px',
+  marginRight: '10px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center'
+}
+const flexEnd = {
+  display: 'flex',
+  justifyContent: 'flex-end',
+  alignItems: 'center',
+  height: '100%'
+}

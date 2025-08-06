@@ -35,13 +35,10 @@ class Sidebar extends Component {
                 <div className="logo">
                     <div className="name"> 药店020商圈调研工具 </div>
                     <div className="name"> 药店020商圈调研工具 </div>
-                    {/*{!this.state.collapsed && <h1>Admin Panel</h1>}*/}
-                    {/*{this.state.collapsed && <Icon type="appstore" />}*/}
                 </div>
                 <Menu
                     theme="dark"
                     mode="inline"
-                    // 修正：使用 selectedKeys 替代 current
                     selectedKeys={this.state.selectedKey}
                     onSelect={this.handleMenuSelect}
                 >

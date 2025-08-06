@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Card, Form, Input, Select, Switch, Button, Divider,notification, Icon } from 'antd';
+import { Card, Form, Switch,notification} from 'antd';
 
-const { Option } = Select;
 const FormItem = Form.Item;
 
 const openMessage = (type, text) => {
@@ -14,16 +13,14 @@ class Setting extends Component {
   state = {
     running: false,
     port: 0,
-    allowRegister: true,
-    enableLog: true,
     openProxy: false
   }
   updateStatus = async () => {
     const current = await window.proxyAPI.getStatus()
-    console.log(current)
     this.setState({
       running: current.running,
       port: current.port,
+      openProxy: current.running,
     })
   }
   // 处理表单提交
@@ -31,7 +28,6 @@ class Setting extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       console.log('表单提交的值: ', values);
-
       if (!err) {
         console.log('表单提交的值: ', values);
         // 这里可以添加保存设置的逻辑
@@ -65,20 +61,10 @@ class Setting extends Component {
     await this.updateStatus()
   }
   render() {
-    const {getFieldDecorator } = this.props.form;
     const { port, running, openProxy } = this.state;
-
     return (
-      <Card title="系统设置">
+      <Card title="代理设置">
         <Form onSubmit={this.handleSubmit}>
-            <FormItem label="网站名称">
-            {getFieldDecorator('siteName', {
-              initialValue: '后台管理系统',
-              rules: [{ required: true, message: '请输入网站名称' }],
-            })(
-              <Input />
-            )}
-          </FormItem>
           <div>
             <div style={flex}>
               <FormItem label="端口" style={flexV}>
@@ -99,44 +85,6 @@ class Setting extends Component {
               提示: 启动后需要将系统代理设置为 127.0.0.1:{port} 才能生效
             </div>
           </div>
-
-          <Divider />
-
-          <FormItem label="默认语言" style={flex}>
-            {getFieldDecorator('language', {
-              initialValue: 'zh-CN',
-            })(
-              <Select style={{ width: 120 }}>
-                <Option value="zh-CN">简体中文</Option>
-                <Option value="en-US">English</Option>
-              </Select>
-            )}
-          </FormItem>
-          <div style={flex}>
-            <FormItem label="允许注册" style={flexV}>
-              {getFieldDecorator('allowRegister', {
-                valuePropName: 'checked',
-                initialValue: true,
-              })(
-                  <Switch />
-              )}
-            </FormItem>
-
-            <FormItem label="开启日志" style={flexV}>
-              {getFieldDecorator('enableLog', {
-                valuePropName: 'checked',
-                initialValue: true,
-              })(
-                  <Switch />
-              )}
-            </FormItem>
-          </div>
-          <Divider />
-
-          <FormItem>
-            <Button type="primary" htmlType="submit">保存设置</Button>
-            <Button style={{ marginLeft: 8 }}>取消</Button>
-          </FormItem>
         </Form>
       </Card>
     );
