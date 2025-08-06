@@ -1,8 +1,8 @@
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 const path = require('path')
 const url = require('url')
-const jobs = require('./jobs.js')
-const { startProxy, stopProxy, isProxyRunning, getPort } = require('./component/proxy/anyproxy.js')
+const jobs = require('./jobs')
+const listener = require('./listener')
 
 // 保持对窗口对象的全局引用，如果不这样做，当JavaScript对象被垃圾回收时，窗口将自动关闭
 let mainWindow
@@ -48,21 +48,7 @@ function createWindow() {
 
   jobs()
 
-  // 代理控制 IPC 通信
-  ipcMain.handle('proxy:start', async () => {
-    return await startProxy()
-  })
-
-  ipcMain.handle('proxy:stop', async () => {
-    return await stopProxy()
-  })
-
-  ipcMain.handle('proxy:status', () => {
-    return {
-      running: isProxyRunning(),
-      port: getPort()
-    }
-  })
+  listener()
 }
 
 // Electron 会在初始化后并准备好创建浏览器窗口时调用这个函数
