@@ -19,11 +19,11 @@ export default function() {
     }
   })
 
-  ipcMain.handle('store:list', async (kw = '', platform = '', page = 1) => {
+  ipcMain.handle('store:list', async (e, kw = '', platform = '', page = 1) => {
     return await getStoreList(kw, platform, page)
   })
 
-  ipcMain.handle('store:info', async (id) => {
+  ipcMain.handle('store:info', async (e, id) => {
     return await getStoreInfo(id)
   })
 }

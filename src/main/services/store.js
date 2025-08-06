@@ -3,9 +3,12 @@ const { Op } = require('sequelize')
 const { PAGE_SIZE } = require('./constants')
 const { renderSuc,  renderFail} = require('../component/web/response')
 
-export async function getStoreList(kw, platform = '', page = 1) {
+export async function getStoreList(kw = '', platform = '', page = 1) {
   let cond = {}
 
+  page = !page ? 1 : parseInt(page)
+  console.log('====================================')
+  console.log(arguments)
   if(platform) {
     cond['platform'] = platform
   }
