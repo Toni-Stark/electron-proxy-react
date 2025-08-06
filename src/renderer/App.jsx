@@ -17,26 +17,18 @@ const { Content, Footer, Header } = Layout;
 class App extends Component {
   state = {
     loading: false,
-    isAuthenticated: !!getToken(),
-    refresh: false
+    isAuthenticated: !!getToken()
   };
   // 登录状态变更处理
   handleAuthChange = (isAuthenticated) => {
     this.setState({ isAuthenticated });
   };
-  refreshFun = () => {
-    this.setState({ refresh: true });
-    setTimeout(()=>{
-      message.success('刷新成功');
-      this.setState({ refresh: false });
-    },2000)
-  }
   getOut = () => {
     removeToken()
     this.setState({ isAuthenticated: !!getToken() })
   }
   render() {
-    const { isAuthenticated, loading, refresh } = this.state;
+    const { isAuthenticated, loading } = this.state;
 
     if (loading) {
       return (
@@ -69,15 +61,7 @@ class App extends Component {
         <Layout>
           <Header value={Header} style={{height: 50, padding: 0}}>
             <div style={flexEnd}>
-              <Button
-                  style={btnStyle}
-                  type="default"
-                  block
-                  loading={refresh}
-                  onClick={this.refreshFun}
-              >
-                刷新
-              </Button>
+
               <Button
                   style={btnStyle}
                   type="default"
@@ -90,8 +74,8 @@ class App extends Component {
             </div>
           </Header>
           <Content style={{
-            margin: '24px 16px',
-            padding: 24,
+            margin: '16px',
+            padding: '16px',
             background: '#fff',
             minHeight: 280
           }}>
