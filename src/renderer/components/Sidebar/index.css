@@ -1,0 +1,20 @@
+.logo {
+    overflow: hidden;
+    display: flex;
+}
+.logo .name {
+    height: 50px;
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 50px;
+
+    white-space: nowrap;
+    animation: scroll 10s linear infinite;
+    padding: 0 5px;
+}
+
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}

@@ -12,6 +12,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 700,
+    icon: path.join(__dirname, '../renderer/logo_256.png'),
     webPreferences: {
       nodeIntegration: false, // Electron 12+ 默认禁用
       contextIsolation: true, // 启用上下文隔离
