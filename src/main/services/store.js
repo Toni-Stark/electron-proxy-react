@@ -3,8 +3,10 @@ const { Op } = require('sequelize')
 const { PAGE_SIZE } = require('./constants')
 const { renderSuc,  renderFail} = require('../component/web/response')
 
-export async function getStoreList(kw, platform = '', page = 1) {
+export async function getStoreList(kw = '', platform = '', page = 1) {
   let cond = {}
+
+  page = !page ? 1 : parseInt(page)
 
   if(platform) {
     cond['platform'] = platform
@@ -31,7 +33,8 @@ export async function getStoreList(kw, platform = '', page = 1) {
   const store_list = await Shop.findAll({
     where: cond,
     limit: PAGE_SIZE,
-    offset: (page - 1) * PAGE_SIZE, 
+    offset: (page - 1) * PAGE_SIZE,
+    raw: true,
   })
 
   return renderSuc({
@@ -48,7 +51,8 @@ export async function getStoreInfo(id) {
   const store_info = await Shop.findOne({
     where: {
       id: id
-    }
+    },
+    raw: true,
   })
 
   if(!store_info) {

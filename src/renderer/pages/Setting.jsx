@@ -17,7 +17,6 @@ class Setting extends Component {
   }
   updateStatus = async () => {
     const current = await window.drugApi.getStatus()
-    console.log('当前代理状态: ', current)
     this.setState({
       running: current.running,
       port: current.port,
