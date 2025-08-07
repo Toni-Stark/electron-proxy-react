@@ -105,7 +105,7 @@ const parseShop = function(data) {
   // 开始店铺基本信息. 后面可以根据这个来看看.
   let shop_info = {
     platform: PLATFORM_ELEME,
-    brand_id: ele_shop_info.brand_id + '',
+    brand_id: ele_shop_info.brandId + '',
     name: ele_shop_info.name,
     third_id: ele_shop_info.storeId,
     address: ele_shop_info.address,
