@@ -35,8 +35,8 @@ class MeiTuanList extends Component {
     visible: false,
     drawInfo: {}
   }
-  async getDataList({page}){
-    const res = await window.drugApi.storeList('','meituan', page)
+  async getDataList({page, kw = ''}){
+    const res = await window.drugApi.storeList(kw,'meituan', page)
     console.log('当前数据列表:', res);
     let list = res.data.store_list.map((item, index)=>{
       return {...item, key: index+''}
@@ -71,8 +71,9 @@ class MeiTuanList extends Component {
   async componentDidMount() {
     await this.getDataList({ page: 1})
   }
-  handleSearch = (e) => {
+  handleSearch = async (e) => {
     console.log(e, 'event');
+    await this.getDataList({kw: e.detail.value, page: 1})
   }
   render() {
     // 表格列定义
@@ -138,10 +139,12 @@ class MeiTuanList extends Component {
       {
         title: '操作',
         key: 'action',
+        fixed: 'right',
+        width: 200,
         render: (text, record) => (
             <div size="middle" style={{display: 'flex'}}>
               <Button onClick={()=>this.showDetail(text,record)}>详情</Button>
-              <Button type="link">SPU</Button>
+              <Button type="link">商品列表</Button>
             </div>
         ),
       },
