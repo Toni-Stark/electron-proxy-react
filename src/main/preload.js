@@ -6,5 +6,8 @@ contextBridge.exposeInMainWorld('drugApi', {
   getStatus: () => ipcRenderer.invoke('proxy:status'),
   storeList: (kw = '', platform = '', page = 1) => ipcRenderer.invoke('store:list', kw, platform, page),
   storeInfo: (id) => ipcRenderer.invoke('store:info', id),
+  // 获取spu信息
   getSpuList: (shop_id, kw = '', page = 1) => ipcRenderer.invoke('product:getSpuList', shop_id, kw, page),
+  // 获取sku信息
+  getSkuList: (shop_id, spu_id = '', kw = '', page = 1, is_export = 0) => ipcRenderer.invoke('product:getSpuList', shop_id, spu_id = '', kw = '', page = 1, is_export = 0),
 })
