@@ -14,7 +14,7 @@ function parseSpu(third_id, source_list) {
       categroys: spu.standardCategorys ? spu.standardCategorys.map((cate) => {
         return cate.name
       }).join(',') : '',
-      sku_label: spu.sku_label,
+      sku_name: spu.sku_label,
       picture: spu.picture,
       single_standard_price: spu.single_standard_price,
       underline_price: spu.underline_price,
@@ -68,7 +68,7 @@ const parseFood = function(data) {
     address: poi_info.address,
     distance: poi_info.distance,
     phone_list: poi_info.phone_list.join(','),
-    solgan: poi_info.bulletin,
+    slogan: poi_info.bulletin,
     logo: poi_info.pic_url,
   }
 
