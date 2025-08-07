@@ -49,7 +49,7 @@ class ElemeList extends Component {
     const res = await window.drugApi.storeList(kw,'eleme', page)
     console.log('当前数据列表:', res);
     let list = res.data.store_list.map((item, index)=>{
-      return {...item, key: index+''}
+      return {...item, key: index+'' ,updatedAt: getTimes(item.updatedAt, 2)}
     })
     this.setState({
       dataList: list,
@@ -151,6 +151,11 @@ class ElemeList extends Component {
         title: '距离',
         dataIndex: 'distance',
         key: 'distance',
+      },
+      {
+        title: '更新时间',
+        dataIndex: 'updatedAt',
+        key: 'updatedAt',
       },
       // {
       //   title: '宣传语',

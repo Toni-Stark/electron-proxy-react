@@ -122,7 +122,12 @@ class MeiTuanSpuList extends Component {
     })
     const res = await window.drugApi.getSkuList(shop, spu, '', 1, 1)
     console.log(res, 'res')
-    await handleExport('测试',res.data.sku_list)
+    let list = res.data?.sku_list;
+    if(list?.length<=0){
+      message.warning('没有可导出的数据')
+      return;
+    }
+    await handleExport(list[0].shop_name,list)
     this.setState({
       loading: false
     })
