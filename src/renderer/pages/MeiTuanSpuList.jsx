@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {Card, Table, Button, Input, Tag, Icon, Avatar, message, Row, Col, Divider, Drawer} from 'antd';
-import {Link} from "react-router-dom";
 import {getTimes} from "../utils/tools";
 import ImagePreviewModal from "../components/ImagePreview";
+import '../styles/MeiTuanSpuList.css'
 
 const { Search } = Input;
 
@@ -39,15 +39,17 @@ class MeiTuanSpuList extends Component {
     drawInfo: {},
     showPreview: false,
     currentImage: '',
+    spu_id: '',
+    shop_id: '',
   }
-  async getDataList({spu_id, shop_id, page, kw = '',is_export}){
+  async getDataList({spu_id, shop_id, page, kw = '',is_export = 0}){
     let spu = spu_id || this.state.spu_id;
     let shop = shop_id || this.state.shop_id;
     const res = await window.drugApi.getSkuList(shop, spu, kw, page, is_export)
     let list = res.data.sku_list.map((item, index)=>{
       return {...item, key: index+1+''}
     })
-    console.log(res, 'res')
+    console.log(spu, shop, 'lg')
     this.setState({
       dataList: list,
       total: res.data.total,
@@ -55,6 +57,19 @@ class MeiTuanSpuList extends Component {
       kw: kw,
       shop_id: shop,
       spu_id: spu,
+    })
+  }
+
+  async uploadAllData(){
+    let spu = this.state.spu_id;
+    let shop = this.state.shop_id;
+    this.setState({
+      loading: true
+    })
+    const res = await window.drugApi.getSkuList(shop, spu, '', 1, 1)
+    console.log(res, 'res')
+    this.setState({
+      loading: false
     })
   }
   refreshFun = async() => {
@@ -198,48 +213,55 @@ class MeiTuanSpuList extends Component {
         key: 'min_order_count',
         width: 65,
       },
-      {
-        title: '操作',
-        key: 'action',
-        fixed: 'right',
-        width: 100,
-        render: (info, record) => (
-            <div size="middle" style={{display: 'flex'}}>
-              <Button onClick={()=>this.showDetail(info)}>详情</Button>
-            </div>
-        ),
-      },
+      // {
+      //   title: '操作',
+      //   key: 'action',
+      //   fixed: 'right',
+      //   width: 100,
+      //   render: (info, record) => (
+      //       <div size="middle" style={{display: 'flex'}}>
+      //         <Button onClick={()=>this.showDetail(info)}>详情</Button>
+      //       </div>
+      //   ),
+      // },
     ];
-    const {dataList, refresh, visible, drawInfo, page, total,currentImage,showPreview} = this.state;
+    const {dataList, refresh, visible, drawInfo, page, total, loading,currentImage,showPreview} = this.state;
 
     return (
       <div>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          padding: 0
-        }}>
-          <Search
-              style={{minWidth: 280,width: 280}}
-              placeholder="搜索店铺名称和地址"
-              enterButton
-              onSearch={this.handleSearch}
-          />
+        <div style={{...flexView,justifyContent: 'space-between'}}>
+          <div style={flexView}>
+            <Search
+                style={{minWidth: 280,width: 280}}
+                placeholder="搜索店铺名称和地址"
+                enterButton
+                onSearch={this.handleSearch}
+            />
+            <Button
+                style={{width: 80, marginLeft: 10}}
+                type="primary"
+                block
+                loading={refresh}
+                onClick={this.refreshFun}
+            >
+              刷新
+            </Button>
+          </div>
           <Button
               style={{width: 80, marginLeft: 10}}
               type="primary"
               block
-              loading={refresh}
-              onClick={this.refreshFun}
+              loading={loading}
+              onClick={()=>this.uploadAllData(this)}
           >
-            刷新
+            导出
           </Button>
         </div>
         <Table
             style={{marginTop: 10}}
             columns={columns}
             size="middle"
-            scroll={{ x: 1300 }}
+            scroll={{ x: 1300, y: 'calc(100vh - 300px)' }}
             pagination={{
               position: 'bottom',
               pageSize: 30,
@@ -319,3 +341,8 @@ const titleStyle = {
   display: 'flex',
   alignItems: 'center',
 };
+const flexView = {
+  display: 'flex',
+  alignItems: 'center',
+  padding: 0
+}
