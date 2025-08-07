@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { 
-  Layout, 
-  Menu, 
-  Avatar, 
-  Dropdown, 
-  Button, 
-  Badge, 
-  Input, 
+import {
+  Layout,
+  Menu,
+  Avatar,
+  Dropdown,
+  Button,
+  Badge,
+  Input,
   Tooltip,
   Typography
 } from 'antd';
@@ -76,9 +76,9 @@ const userMenuItems = [
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* 侧边栏 */}
-      <Sider 
-        trigger={null} 
-        collapsible 
+      <Sider
+        trigger={null}
+        collapsible
         collapsed={collapsed}
         theme="light"
         style={{
@@ -86,12 +86,12 @@ const userMenuItems = [
           zIndex: 10
         }}
       >
-        <div className="logo" style={{ 
-          height: 64, 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          borderBottom: '1px solid #e8e8e8' 
+        <div className="logo" style={{
+          height: 64,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderBottom: '1px solid #e8e8e8'
         }}>
           <Title level={4} style={{ margin: 0 }}>
             {collapsed ? '管理系统' : '后台管理系统'}
@@ -101,17 +101,17 @@ const userMenuItems = [
           mode="inline"
           selectedKeys={[location.pathname]}
           items={menuItems}
-          style={{ 
+          style={{
             marginTop: 16,
             borderRight: 0
           }}
         />
       </Sider>
-      
+
       <Layout>
         {/* 顶部导航 */}
-        <Header style={{ 
-          padding: '0 24px', 
+        <Header style={{
+          padding: '0 24px',
           background: '#fff',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
           display: 'flex',
@@ -129,7 +129,7 @@ const userMenuItems = [
               height: 64,
             }}
           />
-          
+
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             {/* 搜索框 */}
             <div style={{ position: 'relative', width: 200 }}>
@@ -139,14 +139,14 @@ const userMenuItems = [
                 style={{ borderRadius: 20, paddingLeft: 36 }}
               />
             </div>
-            
+
             {/* 通知图标 */}
             <Tooltip title="通知">
               <Badge count={5} dot>
                 <BellOutlined style={{ fontSize: 20, cursor: 'pointer' }} />
               </Badge>
             </Tooltip>
-            
+
             {/* 用户头像 */}
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
               <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
@@ -156,18 +156,18 @@ const userMenuItems = [
             </Dropdown>
           </div>
         </Header>
-        
+
         {/* 主内容区域 - 显示子路由内容 */}
-        <Content style={{ 
-          margin: '24px 16px', 
-          padding: 24, 
+        <Content style={{
+          margin: '24px 16px',
+          padding: 24,
           minHeight: 280,
           background: '#fff',
           borderRadius: 4
         }}>
           {props.children}
         </Content>
-        
+
         {/* 页脚 */}
         <Footer style={{ textAlign: 'center' }}>
           后台管理系统 ©{new Date().getFullYear()} Created with React & Ant Design

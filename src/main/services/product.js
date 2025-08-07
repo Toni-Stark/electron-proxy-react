@@ -1,4 +1,3 @@
-import { Platform } from 'electron-builder'
 const ShopSpu = require('../models/shop_spu')
 const Shop = require('../models/shop')
 const ShopSku = require('../models/shop_sku')
@@ -121,7 +120,7 @@ export async function getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_exp
   if(spu_id) {
     spu_id_list.push(spu_id)
   }
-  
+
   // 处理一个组合查询情况.
   if(spu_id_list.length > 0) {
     cond['spu_id'] = {
