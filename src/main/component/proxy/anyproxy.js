@@ -32,7 +32,7 @@ function ensureCertDir() {
 async function generateDefaultCert() {
   try {
     if(AnyProxy.utils.certMgr.ifRootCAFileExists()) {
-      return
+      return true
     }
 
     await AnyProxy.utils.certMgr.generateRootCA((error, keyPath) => {
@@ -51,8 +51,12 @@ async function generateDefaultCert() {
       }
     })
     console.log('AnyProxy root cert succssed')
+
+    return false
   } catch (e) {
     console.error('证书生成失败:', e)
+
+    return false
   }
 }
 
@@ -68,7 +72,11 @@ async function startProxy() {
 
   try {
     ensureCertDir()
-    await generateDefaultCert()
+    const ret = await generateDefaultCert()
+
+    if(!ret) {
+      return false
+    }
     
     proxyServer = new AnyProxy.ProxyServer(proxyConfig)
     
