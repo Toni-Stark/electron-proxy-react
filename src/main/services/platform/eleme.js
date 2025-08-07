@@ -64,7 +64,8 @@ function parseSpu(third_id, cate_foods_list) {
         third_id: third_id,
         spu_id: spu.item.itemId + '',
         sku_id: spu.item.itemId + '',
-        name: spu.item.title,
+        // 饿了么没有规格
+        name: '',
         price: parseFloat(currentPrice.priceText),
         origin_price: parseFloat(originalPrice.priceText),
         // 折扣价格.
