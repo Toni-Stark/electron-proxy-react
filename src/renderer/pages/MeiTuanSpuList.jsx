@@ -1,47 +1,102 @@
 import React, { Component } from 'react';
-import {Card, Table, Button, Input, Tag, Icon, Avatar, message, Row, Col, Divider, Drawer} from 'antd';
-import {getTimes} from "../utils/tools";
+import { Table, Button, Input,Avatar, message} from 'antd';
 import ImagePreviewModal from "../components/ImagePreview";
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import '../styles/MeiTuanSpuList.css'
 
 const { Search } = Input;
 
-const DescriptionItem = ({ title, content }) => (
-    <div
-        style={{
-          fontSize: 14,
-          lineHeight: '22px',
-          marginBottom: 7,
-          color: 'rgba(0,0,0,0.65)',
-        }}
-    >
-      <p
-          style={{
-            marginRight: 8,
-            display: 'inline-block',
-            color: 'rgba(0,0,0,0.85)',
-          }}
-      >
-        {title}:
-      </p>
-      {content}
-    </div>
-);
+
+const columnsKeys = {
+    shop_name: '店铺名称',
+    shop_address: '店铺地址',
+    shop_picture: '店铺logo',
+    product_name: '药品名称',
+    spu_picture: '药品图片',
+    sku_label: '规格标签',
+    sku_name: '规格名称',
+    price: '价格',
+    origin_price: '原价',
+    stock: '库存',
+    sku_picture: 'sku图片',
+    min_order_count: '最小购买数',
+}
+const handleExport = (fileName, data) => {
+  try {
+    if (!data || data.length === 0) {
+      message.warning('没有可导出的数据');
+      return;
+    }
+
+    // 1. 准备数据 - 确保顺序与columnsKeys一致
+    const columnOrder = Object.keys(columnsKeys);
+    const chineseHeaders = Object.values(columnsKeys);
+
+    // 2. 重新组织数据，只包含columnsKeys中定义的字段
+    const filteredData = data.map(item => {
+      const newItem = {};
+      columnOrder.forEach(key => {
+        newItem[key] = item[key]; // 保留原始键名
+      });
+      return newItem;
+    });
+
+    // 3. 创建工作簿和工作表
+    const wb = XLSX.utils.book_new();
+
+    // 4. 先创建工作表（使用原始键名）
+    const worksheet = XLSX.utils.json_to_sheet(filteredData, {
+      header: columnOrder // 使用原始键名作为header
+    });
+
+    // 5. 替换表头为中文（必须在创建工作表后）
+    XLSX.utils.sheet_add_aoa(worksheet, [chineseHeaders], { origin: "A1" });
+
+    // 6. 添加到工作簿
+    XLSX.utils.book_append_sheet(wb, worksheet, "数据");
+
+    // 7. 生成文件并下载
+    const excelBuffer = XLSX.write(wb, {
+      bookType: 'xlsx',
+      type: 'array'
+    });
+
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    saveAs(blob, fileName || `导出数据_${new Date().toISOString().slice(0, 10)}.xlsx`);
+
+    message.success('导出成功');
+  } catch (error) {
+    console.error('导出失败:', error);
+    message.error('导出失败: ' + error.message);
+  }
+};
 
 class MeiTuanSpuList extends Component {
-  state = {
-    dataList: [],
-    total: 0,
-    kw: '',
-    page: 1,
-    refresh: false,
-    visible: false,
-    drawInfo: {},
-    showPreview: false,
-    currentImage: '',
-    spu_id: '',
-    shop_id: '',
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataList: [],
+      total: 0,
+      kw: '',
+      page: 1,
+      refresh: false,
+      visible: false,
+      drawInfo: {},
+      showPreview: false,
+      currentImage: '',
+      spu_id: '',
+      shop_id: '',
+    };
+    this.getDataList = this.getDataList.bind(this); // 手动绑定
+    this.uploadAllData = this.uploadAllData.bind(this); // 手动绑定
+    this.refreshFun = this.refreshFun.bind(this); // 手动绑定
+    this.uploadAllData = this.uploadAllData.bind(this); // 手动绑定
   }
+
   async getDataList({spu_id, shop_id, page, kw = '',is_export = 0}){
     let spu = spu_id || this.state.spu_id;
     let shop = shop_id || this.state.shop_id;
@@ -49,7 +104,7 @@ class MeiTuanSpuList extends Component {
     let list = res.data.sku_list.map((item, index)=>{
       return {...item, key: index+1+''}
     })
-    console.log(spu, shop, 'lg')
+    console.log('当前数据列表:', list, {spu_id, shop_id, page, kw, is_export})
     this.setState({
       dataList: list,
       total: res.data.total,
@@ -68,6 +123,7 @@ class MeiTuanSpuList extends Component {
     })
     const res = await window.drugApi.getSkuList(shop, spu, '', 1, 1)
     console.log(res, 'res')
+    handleExport('测试',res.data.sku_list)
     this.setState({
       loading: false
     })
@@ -77,23 +133,6 @@ class MeiTuanSpuList extends Component {
     await this.getDataList({ page: 1})
     message.success('刷新成功');
     this.setState({ refresh: false });
-  }
-  showDetail = async (info) => {
-    console.log(info);
-    const res = await window.drugApi.storeInfo(info.id);
-    console.log(res,'res')
-    const data = {
-      ...res.data,
-      createdAt: getTimes(res.data.createdAt),
-      updatedAt: getTimes(res.data.createdAt),
-  }
-    this.setState({
-      visible: true,
-      drawInfo: data
-    })
-  }
-  naviToSpuList = async (info) => {
-    this.props.history.push(`/meituan/spuList/${info.id}/${info.brand_id}`)
   }
   onClose = () => {
     this.setState({
@@ -225,7 +264,7 @@ class MeiTuanSpuList extends Component {
       //   ),
       // },
     ];
-    const {dataList, refresh, visible, drawInfo, page, total, loading,currentImage,showPreview} = this.state;
+    const {dataList, refresh,page, total, loading,currentImage,showPreview} = this.state;
 
     return (
       <div>
@@ -272,45 +311,6 @@ class MeiTuanSpuList extends Component {
             }}
             dataSource={dataList}
         />
-        <Drawer
-            width={640}
-            placement="right"
-            closable={false}
-            onClose={this.onClose}
-            visible={visible}
-        >
-          <div style={titleStyle}>
-            <Avatar src={drawInfo.logo} size={50} style={{marginRight: 10}}/>
-            <p style={evalStyle}>{drawInfo.name}</p>
-          </div>
-          <Divider />
-          <Row>
-            <Col span={24}>
-              <DescriptionItem title="店铺地址" content={drawInfo.address} />
-            </Col>
-          </Row>
-          <Row>
-            <Col span={12}>
-              <DescriptionItem title="品牌id" content={drawInfo.brand_id} />
-            </Col>
-            <Col span={12}>
-              <DescriptionItem title="距离" content={drawInfo.distance} />
-            </Col>
-          </Row>
-          <Row>
-            <Col span={12}>
-              <DescriptionItem title="创建时间" content={drawInfo.createdAt} />
-            </Col>
-            <Col span={12}>
-              <DescriptionItem title="更新时间" content={drawInfo.updatedAt} />
-            </Col>
-          </Row>
-          <Row>
-            <Col span={24}>
-              <DescriptionItem title="宣传语" content={drawInfo.slogan}/>
-            </Col>
-          </Row>
-        </Drawer>
         <ImagePreviewModal
             visible={showPreview}
             imageUrl={currentImage}
@@ -323,24 +323,6 @@ class MeiTuanSpuList extends Component {
 
 export default MeiTuanSpuList;
 
-const pStyle = {
-  fontSize: 16,
-  color: 'rgba(0,0,0,0.85)',
-  lineHeight: '24px',
-  display: 'block',
-  marginBottom: 16,
-  fontWeight: 'bold'
-};
-const evalStyle = {
-  fontSize: 25,
-  display: 'block',
-  margin: 0,
-  lineHeight: '50px'
-};
-const titleStyle = {
-  display: 'flex',
-  alignItems: 'center',
-};
 const flexView = {
   display: 'flex',
   alignItems: 'center',
