@@ -35,7 +35,7 @@ export async function getStoreList(kw = '', platform = '', page = 1) {
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE,
     raw: true,
-    order: [['updateAt', 'DESC']]
+    order: [['updatedAt', 'DESC']]
   })
 
   return renderSuc({
