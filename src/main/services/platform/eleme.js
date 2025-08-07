@@ -106,8 +106,8 @@ const parseShop = function(data) {
     address: ele_shop_info.address,
     distance: '', // 这里的距离可能要从列表里面拿取.
     phone_list: ele_shop_info.phoneList.join(','),
-    slogan: poi_info.promotionInfo,
-    logo: poi_info.imagePath,
+    slogan: ele_shop_info.promotionInfo,
+    logo: ele_shop_info.imagePath,
   }
 
   return {
