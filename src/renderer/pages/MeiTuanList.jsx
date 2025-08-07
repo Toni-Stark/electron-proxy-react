@@ -71,7 +71,9 @@ class MeiTuanList extends Component {
   async componentDidMount() {
     await this.getDataList({ page: 1})
   }
-
+  handleSearch = (e) => {
+    console.log(e, 'event');
+  }
   render() {
     // 表格列定义
     const columns = [
@@ -105,7 +107,7 @@ class MeiTuanList extends Component {
         dataIndex: 'logo',
         key: 'logo',
         render: (logo) => {
-          return <Avatar src={logo} size={40}/>
+          return <Avatar shape="square" src={logo} size={40}/>
         },
       },
       // {
@@ -138,8 +140,8 @@ class MeiTuanList extends Component {
         key: 'action',
         render: (text, record) => (
             <div size="middle" style={{display: 'flex'}}>
-              <Tag color="blue" onClick={()=>this.showDetail(text,record)}><Icon type="info-circle" theme="twoTone" />详情</Tag>
-              <Tag color="geekblue"><Link to="/meituan/spu?">SPU</Link></Tag>
+              <Button onClick={()=>this.showDetail(text,record)}>详情</Button>
+              <Button type="link">SPU</Button>
             </div>
         ),
       },
@@ -150,13 +152,17 @@ class MeiTuanList extends Component {
       <div>
         <div style={{
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
           padding: 0
         }}>
-          <Search style={{minWidth: 280,width: 280}} placeholder="搜索店铺名称和地址" enterButton />
+          <Search
+              style={{minWidth: 280,width: 280}}
+              placeholder="搜索店铺名称和地址"
+              enterButton
+              onSearch={this.handleSearch}
+          />
           <Button
-              style={{width: 100}}
+              style={{width: 100, marginLeft: 10}}
               type="primary"
               block
               loading={refresh}
