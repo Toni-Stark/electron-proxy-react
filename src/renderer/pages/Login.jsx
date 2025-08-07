@@ -3,23 +3,31 @@ import {Icon , Button, message, Input, Avatar} from 'antd';
 import { setToken } from '../utils/auth';
 import '../styles/Login.css'
 class Login extends Component {
-    state = {
-        token: ''
+    constructor(props) {
+        super(props);
+        this.state = {
+            token: ''
+        }
+        this.handleSubmit = this.handleSubmit.bind(this); // 手动绑定
+        this.currentToken = this.currentToken.bind(this); // 手动绑定
     }
-    handleSubmit = () => {
+    handleSubmit = async () => {
         if (!this.state.token.trim()) {
             message.warning('请输入Token');
             return;
         }
 
         this.setState({loading: true});
-        setTimeout(() => {
+        const res = await window.drugApi.userLogin(this.state.token)
+        if(res.code != 200){
+            message.error(res.msg);
             this.setState({loading: false});
-            message.success('登录成功');
-            setToken(this.state.token)
-            this.props.onAuthChange(true)
-            // 这里跳转到主页
-        }, 1000);
+            return;
+        }
+        this.setState({loading: false});
+        message.success('登录成功');
+        setToken(this.state.token)
+        this.props.onAuthChange(true)
     };
     currentToken = (e) => {
         let value = e.target.value;
@@ -40,9 +48,9 @@ class Login extends Component {
                         <h2 style={{ marginTop: 16, zIndex: 3 }}>Token 登录</h2>
                     </div>
 
-                    <Input
+                    <Input.Password
                         prefix={<Icon type="lock" />}
-                        placeholder="请输入访问Token"
+                        placeholder="请输入访问密码"
                         size="large"
                         style={marginTop}
                         value={token}

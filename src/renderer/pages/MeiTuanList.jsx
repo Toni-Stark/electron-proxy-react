@@ -59,7 +59,7 @@ class MeiTuanList extends Component {
     })
   }
   refreshFun = async() => {
-    this.setState({ refresh: true });
+    this.setState({ refresh: true, kw: '' });
     await this.getDataList({ page: 1})
     message.success('刷新成功');
     this.setState({ refresh: false });

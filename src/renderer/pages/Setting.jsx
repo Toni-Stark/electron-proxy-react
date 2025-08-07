@@ -10,10 +10,14 @@ const openMessage = (type, text) => {
 };
 
 class Setting extends Component {
-  state = {
-    running: false,
-    port: 0,
-    openProxy: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      running: false,
+      port: 0,
+      openProxy: false
+    }
+    this.updateStatus = this.updateStatus.bind(this); // 手动绑定
   }
   updateStatus = async () => {
     const current = await window.drugApi.getStatus()

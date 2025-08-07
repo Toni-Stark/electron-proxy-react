@@ -6,11 +6,14 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 class Sidebar extends Component {
-  state = {
-    collapsed: false,
-    current: '1',
-  };
-
+  constructor(props) {
+    super(props);
+    this.state = {
+      collapsed: false,
+      current: '1',
+    }
+    this.updateStatus = this.updateStatus.bind(this); // 手动绑定
+  }
   // 处理菜单折叠
   onCollapse = (collapsed) => {
     this.setState({ collapsed });

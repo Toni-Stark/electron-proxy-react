@@ -22,7 +22,7 @@ const columnsKeys = {
     sku_picture: 'sku图片',
     min_order_count: '最小购买数',
 }
-const handleExport = (fileName, data) => {
+const handleExport = async (fileName, data) => {
   try {
     if (!data || data.length === 0) {
       message.warning('没有可导出的数据');
@@ -66,8 +66,7 @@ const handleExport = (fileName, data) => {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     });
 
-    saveAs(blob, fileName || `导出数据_${new Date().toISOString().slice(0, 10)}.xlsx`);
-
+    await saveAs(blob, fileName || `导出数据_${new Date().toISOString().slice(0, 10)}.xlsx`)
     message.success('导出成功');
   } catch (error) {
     console.error('导出失败:', error);
@@ -123,13 +122,13 @@ class MeiTuanSpuList extends Component {
     })
     const res = await window.drugApi.getSkuList(shop, spu, '', 1, 1)
     console.log(res, 'res')
-    handleExport('测试',res.data.sku_list)
+    await handleExport('测试',res.data.sku_list)
     this.setState({
       loading: false
     })
   }
   refreshFun = async() => {
-    this.setState({ refresh: true });
+    this.setState({ refresh: true, kw: '' });
     await this.getDataList({ page: 1})
     message.success('刷新成功');
     this.setState({ refresh: false });
@@ -211,7 +210,7 @@ class MeiTuanSpuList extends Component {
         title: '规格标签',
         dataIndex: 'sku_label',
         key: 'sku_label',
-        width: 200
+        width: 90
       },
       {
         title: '规格名称',
@@ -237,15 +236,15 @@ class MeiTuanSpuList extends Component {
         key: 'stock',
         width: 42,
       },
-      {
-        title: 'sku图片',
-        dataIndex: 'sku_picture',
-        key: 'sku_picture',
-        render: (logo) => {
-          return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
-        },
-        width: 65
-      },
+        // {
+        //   title: 'sku图片',
+        //   dataIndex: 'sku_picture',
+        //   key: 'sku_picture',
+        //   render: (logo) => {
+        //     return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
+        //   },
+        //   width: 65
+        // },
       {
         title: '最小购买数',
         dataIndex: 'min_order_count',
@@ -272,7 +271,7 @@ class MeiTuanSpuList extends Component {
           <div style={flexView}>
             <Search
                 style={{minWidth: 280,width: 280}}
-                placeholder="搜索店铺名称和地址"
+                placeholder="请输入药品名称"
                 enterButton
                 onSearch={this.handleSearch}
             />
