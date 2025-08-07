@@ -93,11 +93,11 @@ class App extends Component {
             </Switch>
           </Content>
 
-          {/* 页脚 */}
-          <Footer style={{ textAlign: 'center' }}>
-            后台管理系统 ©{new Date().getFullYear()}
-            Created with React {React.version} & Ant Design
-          </Footer>
+          {/*/!* 页脚 *!/*/}
+          {/*<Footer style={{ textAlign: 'center' }}>*/}
+          {/*  后台管理系统 ©{new Date().getFullYear()}*/}
+          {/*  Created with React {React.version} & Ant Design*/}
+          {/*</Footer>*/}
         </Layout>
       </Layout>
     );
