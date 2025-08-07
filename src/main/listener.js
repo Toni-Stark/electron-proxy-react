@@ -2,6 +2,7 @@ const { ipcMain } = require('electron')
 const { startProxy, stopProxy, isProxyRunning, getPort } = require('./component/proxy/anyproxy')
 const { getStoreInfo, getStoreList } = require('./services/store')
 const { getSpuList, getSkuList } = require('./services/product')
+const { login } = require('./services/user')
 
 export default function() {
   // 代理控制 IPC 通信
@@ -33,7 +34,11 @@ export default function() {
   })
 
   ipcMain.handle('product:getSkuList', async(e, shop_id, spu_id = '', kw = '', page = 1, is_export = 0) => {
-    return await getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_export = 0)
+    return await getSkuList(shop_id, spu_id, kw, page, is_export)
+  })
+
+  ipcMain.handle('user:login', async(e, token) => {
+    return await login(token)
   })
 }
 
