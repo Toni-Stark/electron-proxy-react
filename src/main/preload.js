@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('drugApi', {
   start: () => ipcRenderer.invoke('proxy:start'),
   stop: () => ipcRenderer.invoke('proxy:stop'),
   getStatus: () => ipcRenderer.invoke('proxy:status'),
+  userLogin: (token) => ipcRenderer.invoke('user:login', token),
   storeList: (kw = '', platform = '', page = 1) => ipcRenderer.invoke('store:list', kw, platform, page),
   storeInfo: (id) => ipcRenderer.invoke('store:info', id),
   // 获取spu信息
