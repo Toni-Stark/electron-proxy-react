@@ -10,8 +10,8 @@ export default class ImagePreviewModal extends React.Component {
                 visible={visible}
                 footer={null}
                 onCancel={onClose}
-                width="80%"
-                style={{ top: 20 }}
+                width="60%"
+                style={{ top: 80 }}
             >
                 <img
                     src={imageUrl}

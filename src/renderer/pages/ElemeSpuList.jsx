@@ -75,7 +75,7 @@ const handleExport = (fileName, data) => {
   }
 };
 
-class MeiTuanSpuList extends Component {
+class ElemeSpuList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -321,7 +321,7 @@ class MeiTuanSpuList extends Component {
   }
 }
 
-export default MeiTuanSpuList;
+export default ElemeSpuList;
 
 const flexView = {
   display: 'flex',

@@ -29,16 +29,21 @@ const DescriptionItem = ({ title, content }) => (
 );
 
 class MeiTuanList extends Component {
-  state = {
-    dataList: [],
-    total: 0,
-    kw: '',
-    page: 1,
-    refresh: false,
-    visible: false,
-    drawInfo: {},
-    showPreview: false,
-    currentImage: '',
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataList: [],
+      total: 0,
+      kw: '',
+      page: 1,
+      refresh: false,
+      visible: false,
+      drawInfo: {},
+      showPreview: false,
+      currentImage: '',
+    }
+    this.getDataList = this.getDataList.bind(this); // 手动绑定
+    this.refreshFun = this.refreshFun.bind(this); // 手动绑定
   }
   async getDataList({page, kw = ''}){
     const res = await window.drugApi.storeList(kw,'meituan', page)

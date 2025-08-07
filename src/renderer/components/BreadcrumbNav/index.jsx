@@ -15,7 +15,9 @@ const BreadcrumbNav = ({ location }) => {
         },
         '/eleme': {
             name: '饿了么数据',
-            children: {}
+            children: {
+                '/eleme/spuList': '商品列表'
+            }
         },
         '/settings': {
             name: '系统设置',
