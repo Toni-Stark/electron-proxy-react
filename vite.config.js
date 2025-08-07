@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import electron from 'vite-plugin-electron'
 import path from 'path'
 import glob from 'glob'
+import commonjs from '@rollup/plugin-commonjs'
 
 const projectRoot = __dirname
 
@@ -60,7 +61,19 @@ export default defineConfig({
           }
         }
       }
-    })
+    }),
+    {
+      ...commonjs({
+        include: [
+          /rc-menu/,
+          /rc-select/,
+        ],
+        // 处理混合模块
+        transformMixedEsModules: true
+      }),
+      // 在Vite的预构建阶段应用此插件
+      enforce: 'pre'
+    }
   ],
   publicDir: path.resolve(projectRoot, 'src/renderer/assets'),
   server: {
@@ -71,7 +84,14 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(projectRoot, 'src/renderer')  // 修正别名路径
+      '@': path.resolve(projectRoot, 'src/renderer'),
+    }
+  },
+  optimizeDeps: {
+    include: ['rc-menu', 'rc-select'],
+    // 告诉Vite这些模块是CommonJS格式
+    commonjsOptions: {
+      include: [/rc-menu/, /rc-select/]
     }
   },
   build: {
@@ -79,6 +99,9 @@ export default defineConfig({
     emptyOutDir: true,
     assetsDir: 'assets', // 静态资源（CSS、JS、图片）输出子目录
     base: './', // 确保打包后资源路径为相对路径（关键）
+    commonjsOptions: {
+      transformMixedEsModules: true
+    },
     rollupOptions: {
       output: {
         // 确保 chunk 文件输出到 assets 目录
