@@ -12,7 +12,7 @@
   },
   "build": {
     "appId": "com.360zhishu.drug.spider",
-    "productName": "药店商圈调研工具",
+    "productName": "Python工具",
     "directories": {
       "output": "release",
       "app": "."
