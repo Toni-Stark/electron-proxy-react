@@ -9,5 +9,5 @@ contextBridge.exposeInMainWorld('drugApi', {
   // 获取spu信息
   getSpuList: (shop_id, kw = '', page = 1) => ipcRenderer.invoke('product:getSpuList', shop_id, kw, page),
   // 获取sku信息
-  getSkuList: (shop_id, spu_id = '', kw = '', page = 1, is_export = 0) => ipcRenderer.invoke('product:getSpuList', shop_id, spu_id = '', kw = '', page = 1, is_export = 0),
+  getSkuList: (shop_id, spu_id = '', kw = '', page = 1, is_export = 0) => ipcRenderer.invoke('product:getSkuList', shop_id, spu_id = '', kw = '', page = 1, is_export = 0),
 })

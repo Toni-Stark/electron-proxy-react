@@ -155,7 +155,7 @@ export async function getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_exp
     // 这里要重新查一次. 按照店铺名称. 
     const spu_list = await ShopSpu.findAll({
       where: {
-        sup_id: {
+        spu_id: {
           [Op.in]: sku_list.map((item) => {
             return item.spu_id
           })
@@ -168,7 +168,7 @@ export async function getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_exp
 
     let spu_map = {}
     // 换算一下. 开始拼凑数据了.
-    for(let i = 0; i <= spu_list.length; i++) {
+    for(let i = 0; i < spu_list.length; i++) {
       spu_map[spu_list[i].spu_id] = spu_list[i]
     }
 
