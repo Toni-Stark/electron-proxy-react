@@ -37,10 +37,14 @@ function parseSpu(third_id, cate_foods_list) {
 
     // 饿了么目前来看 只有spu. 没看到规格这种. 所以sku的名字为空. spu只有单独的spu_id.
     foods.map((spu) => {
+      const currentPrice = spu.item.currentPrice
+
+      const originalPrice = spu.item.originalPrice ? spu.item.originalPrice : currentPrice
+
       spu_list.push({
         platform: PLATFORM_ELEME,
         third_id: third_id,
-        spu_id: spu.item.spuId,
+        spu_id: spu.item.itemId,
         name: spu.item.title,
         show_name: '',
         // 这里是已售
@@ -50,21 +54,21 @@ function parseSpu(third_id, cate_foods_list) {
         picture: spu.item.mainPictUrl,
         // 折扣价格. 也就是实际到手价格. 这里的展示尤为重要. 看看怎么操作了. 如果是美团或者饿了么的话.
         // 不看折扣价格.
-        single_standard_price: parseFloat(spu.item.currentPrice.priceText),
-        underline_price: parseFloat(spu.item.originalPrice.priceText),
+        single_standard_price: parseFloat(currentPrice.priceText),
+        underline_price: parseFloat(originalPrice.priceText),
         tag: cateId
       })
 
       sku_list.push({
         platform: PLATFORM_ELEME,
         third_id: third_id,
-        spu_id: spu.item.spuId + '',
+        spu_id: spu.item.itemId + '',
         sku_id: spu.item.itemId + '',
-        name: spu.item.name,
-        price: parseFloat(spu.item.currentPrice.priceText),
-        origin_price: parseFloat(spu.item.originalPrice.priceText),
+        name: spu.item.title,
+        price: parseFloat(currentPrice.priceText),
+        origin_price: parseFloat(originalPrice.priceText),
         // 折扣价格.
-        discount_price: parseFloat(spu.item.currentPrice.discountFeeText),
+        discount_price: parseFloat(currentPrice.discountFeeText),
         stock: spu.item.stockModel.quantity,
         real_stock: spu.item.stockModel.quantity,
         activity_stock: spu.item.stockModel.quantity,
@@ -130,7 +134,7 @@ const parseTags = function(data) {
   }
 
   // 开始解析tag.
-  let tag_list = info.data.data.catInfoList((item, idx) => {
+  let tag_list = info.data.data.catInfoList.map((item, idx) => {
     return {
       platform: PLATFORM_ELEME,
       third_id: req_data.storeId,
@@ -154,12 +158,11 @@ const parseSpuPage = function(data) {
   const info = JSON.parse(data.body)
 
   const req_data = getDataFromUrl(data.url)
-
-  if(parseInt(info.data.errorCode) != 0 || !req_data.storeId) {
+  if(!info.data || parseInt(info.data.errorCode) != 0 || !req_data.storeId) {
     return false
   }
 
-  return parseSpu(req_data.storeID, info.data.data)
+  return parseSpu(req_data.storeId, info.data.data)
 }
 
 export default {
