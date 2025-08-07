@@ -11,6 +11,7 @@ import {getToken, removeToken} from './utils/auth'
 import Login from "./pages/Login";
 import EleList from "./pages/ElemeList";
 import MeiTuanList from "./pages/MeiTuanList";
+import MeiTuanSpuList from "./pages/MeiTuanSpuList";
 
 const { Content, Footer, Header } = Layout;
 
@@ -84,6 +85,7 @@ class App extends Component {
               <Route exact path="/" component={Dashboard} />
               <Route path="/users/add" component={UserAdd} />
               <Route path="/users" component={UserList} />
+              <Route path="/meituan/spuList/:shop_id/:spu_id" component={MeiTuanSpuList} />
               <Route path="/meituan" component={MeiTuanList} />
               <Route path="/eleme" component={EleList} />
               <Route path="/settings" component={Setting} />

@@ -28,7 +28,7 @@ const DescriptionItem = ({ title, content }) => (
     </div>
 );
 
-class MeiTuanList extends Component {
+class MeiTuanSpuList extends Component {
   state = {
     dataList: [],
     total: 0,
@@ -40,17 +40,21 @@ class MeiTuanList extends Component {
     showPreview: false,
     currentImage: '',
   }
-  async getDataList({page, kw = ''}){
-    const res = await window.drugApi.storeList(kw,'meituan', page)
-    console.log('当前数据列表:', res);
-    let list = res.data.store_list.map((item, index)=>{
-      return {...item, key: index+''}
+  async getDataList({spu_id, shop_id, page, kw = '',is_export}){
+    let spu = spu_id || this.state.spu_id;
+    let shop = shop_id || this.state.shop_id;
+    const res = await window.drugApi.getSkuList(shop, spu, kw, page, is_export)
+    let list = res.data.sku_list.map((item, index)=>{
+      return {...item, key: index+1+''}
     })
+    console.log(res, 'res')
     this.setState({
       dataList: list,
       total: res.data.total,
       page: page,
-      kw: kw
+      kw: kw,
+      shop_id: shop,
+      spu_id: spu,
     })
   }
   refreshFun = async() => {
@@ -66,14 +70,14 @@ class MeiTuanList extends Component {
     const data = {
       ...res.data,
       createdAt: getTimes(res.data.createdAt),
-      updatedAt: getTimes(res.data.updatedAt),
+      updatedAt: getTimes(res.data.createdAt),
   }
     this.setState({
       visible: true,
       drawInfo: data
     })
   }
-  naviToSpuList = (info) => {
+  naviToSpuList = async (info) => {
     this.props.history.push(`/meituan/spuList/${info.id}/${info.brand_id}`)
   }
   onClose = () => {
@@ -82,9 +86,13 @@ class MeiTuanList extends Component {
       drawInfo: {}
     });
   }
+
   async componentDidMount() {
-    await this.getDataList({ page: 1})
+    const { shop_id, spu_id } = this.props.match.params;
+    console.log(shop_id, spu_id, 'id')
+    await this.getDataList({spu_id, shop_id, page: 1})
   }
+
   handleSearch = async (e) => {
     await this.getDataList({kw: e})
   }
@@ -104,73 +112,100 @@ class MeiTuanList extends Component {
     // 表格列定义
     const columns = [
       {
-        title: 'id',
-        dataIndex: 'id',
-        key: 'id',
+        title: '序号',
+        dataIndex: 'key',
+        key: 'key',
+        width: 55
       },
-      // {
-      //   title: '所属平台',
-      //   dataIndex: 'platform',
-      //   key: 'platform',
-      // },
-      {
-        title: '品牌id',
-        dataIndex: 'brand_id',
-        key: 'brand_id',
-      },
-      // {
-      //   title: '店铺三方id',
-      //   dataIndex: 'third_id',
-      //   key: 'third_id',
-      // },
       {
         title: '店铺名称',
-        dataIndex: 'name',
-        key: 'name',
-      },
-      {
-        title: '店铺图片',
-        dataIndex: 'logo',
-        key: 'logo',
-        render: (logo) => {
-          return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
-        },
+        dataIndex: 'shop_name',
+        key: 'shop_name',
+        width: 100
       },
       {
         title: '店铺地址',
-        dataIndex: 'address',
-        key: 'address',
-        width: "30%",
+        dataIndex: 'shop_address',
+          key: 'shop_address',
+          width: 200
       },
       {
-        title: '距离',
-        dataIndex: 'distance',
-        key: 'distance',
-      },
-      // {
-      //   title: '宣传语',
-      //   dataIndex: 'slogan',
-      //   key: 'slogan',
-      // },
-
-      {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-        render: (status) => {
-          let color = status === 1 ? 'green' : 'red';
-          return <Tag color={color}>{status === 1 ? '正常' : '异常'}</Tag>;
+        title: '店铺logo',
+        dataIndex: 'shop_picture',
+        key: 'shop_picture',
+        render: (logo) => {
+          return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
         },
+        width: 65
+      },
+      {
+        title: '药品名称',
+        dataIndex: 'product_name',
+        key: 'product_name',
+        width: 200
+      },
+      {
+        title: '药品图片',
+        dataIndex: 'spu_picture',
+        key: 'spu_picture',
+        render: (logo) => {
+          return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
+        },
+        width: 65
+      },
+      {
+        title: '规格标签',
+        dataIndex: 'sku_label',
+        key: 'sku_label',
+        width: 200
+      },
+      {
+        title: '规格名称',
+        dataIndex: 'sku_name',
+        key: 'sku_name',
+        width: 150
+      },
+      {
+        title: '价格',
+        dataIndex: 'price',
+        key: 'price',
+        width: 42,
+      },
+      {
+        title: '原价',
+        dataIndex: 'origin_price',
+        key: 'origin_price',
+        width: 42,
+      },
+      {
+        title: '库存',
+        dataIndex: 'stock',
+        key: 'stock',
+        width: 42,
+      },
+      {
+        title: 'sku图片',
+        dataIndex: 'sku_picture',
+        key: 'sku_picture',
+        render: (logo) => {
+          return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
+        },
+        width: 65
+      },
+      {
+        title: '最小购买数',
+        dataIndex: 'min_order_count',
+        key: 'min_order_count',
+        width: 65,
       },
       {
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 200,
+        width: 100,
         render: (info, record) => (
             <div size="middle" style={{display: 'flex'}}>
               <Button onClick={()=>this.showDetail(info)}>详情</Button>
-              <Button type="link" onClick={()=>this.naviToSpuList(info)}>商品列表</Button>
             </div>
         ),
       },
@@ -264,7 +299,7 @@ class MeiTuanList extends Component {
   }
 }
 
-export default MeiTuanList;
+export default MeiTuanSpuList;
 
 const pStyle = {
   fontSize: 16,
