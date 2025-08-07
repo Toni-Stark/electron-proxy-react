@@ -1,4 +1,4 @@
-const {PLATFORM_MEITUAN} = require('./constants')
+const {PLATFORM_MEITUAN} = require('../constants')
 
 function parseSpu(third_id, source_list) {
   let spu_list = []
