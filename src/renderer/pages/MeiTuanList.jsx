@@ -49,7 +49,7 @@ class MeiTuanList extends Component {
     const res = await window.drugApi.storeList(kw,'meituan', page)
     console.log('当前数据列表:', res);
     let list = res.data.store_list.map((item, index)=>{
-      return {...item, key: index+''}
+      return {...item, key: index+'' ,updatedAt: getTimes(item.updatedAt, 2) }
     })
     this.setState({
       dataList: list,
@@ -146,6 +146,11 @@ class MeiTuanList extends Component {
         dataIndex: 'address',
         key: 'address',
         width: "30%",
+      },
+      {
+        title: '更新时间',
+        dataIndex: 'updatedAt',
+        key: 'updatedAt',
       },
       {
         title: '距离',
