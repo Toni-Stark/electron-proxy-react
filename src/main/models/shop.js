@@ -55,6 +55,13 @@ const Shop = sequelize.define('Shop', {
     comment: '口号',
     defaultValue: '',
   },
+  // 可能存在多个. 以逗号分隔.
+  phone_list: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    comment: '手机号',
+    defaultValue: '',
+  },
   status: {
     type: DataTypes.INTEGER,
     allowNull: false,

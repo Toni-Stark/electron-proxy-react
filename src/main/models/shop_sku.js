@@ -38,7 +38,6 @@ const ShopSku = sequelize.define('ShopSku', {
     allowNull: false,
     defaultValue: '',
   },
-  
   price: {
     type: DataTypes.FLOAT,
     allowNull: false,
@@ -49,6 +48,12 @@ const ShopSku = sequelize.define('ShopSku', {
     type: DataTypes.FLOAT,
     allowNull: false,
     comment: '原价',
+    defaultValue: 0
+  },
+  discount_price: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    comment: '折扣价',
     defaultValue: 0
   },
   stock: {

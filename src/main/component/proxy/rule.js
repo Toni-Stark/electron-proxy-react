@@ -6,7 +6,8 @@ function isCrawlHost(host) {
       'meituan.net',  
     ],
     'eleme': [
-      'ele.me'
+      'ele.me',
+      'mmstat.com'
     ],
   }
 
@@ -65,9 +66,14 @@ module.exports = {
       }
     }
 
-    // 这里开始保存. 可以放到另外一个地方了. 后面来看. @todo
-    console.log('=============================================================')
-    console.log(requestDetail.url)
+    // cors策略屏蔽.
+    if(requestDetail.requestOptions.method.toLowerCase() == 'options') {
+      return {
+        response: responseDetail.response
+      }
+    }
+
+    // 这里开始保存. 可以放到另外一个地方了. 后面来看. 
     const QueueList = require('../../models/queue_list')
 
     // 某些固定的url 需要获取request里面的请求数据. 由于某些不是标准的. 所以我们这里先抓取指定的连接用来做对应的数据信息.
@@ -81,7 +87,7 @@ module.exports = {
         'body': responseDetail.response.body.toString(),
         'resp_headers': headers,
         'req_headers': requestDetail.requestOptions.headers,
-        'req_params': requestDetail.requestData.toString()
+        'req_params': requestDetail.requestData.toJSON()
       }),
       status: -2
     }).then(() => {

@@ -5,7 +5,8 @@ const ShopTag = require('../models/shop_tag')
 const ShopSpu = require('../models/shop_spu')
 const ShopSku = require('../models/shop_sku')
 const ShopSpuTag = require('../models/shop_spu_tag')
-const meituan = require('./meituan')
+const meituan = require('./platform/meituan')
+const eleme = require('./platform/eleme')
 
 const handleMeituan = (url, data) => {
   // 解析基础数据. 这里可以解析门店数据.
@@ -21,6 +22,25 @@ const handleMeituan = (url, data) => {
   return false
 }
 
+const handleEleme = (url, data) => {
+  // 解析店铺基本数据.
+  if(url.indexOf('/h5/mtop.venus.shopresourceservice.getshopresource') > - 1) {
+    return eleme.parseShop(data)
+  }
+
+  // 解析展示的标签.
+  if(url.indexOf('/h5/mtop.venus.shopcategoryservice.getcategoryv2') > -1) {
+    return eleme.parseTags(data)
+  }
+
+  // 解析商品信息了.
+  if(url.indexOf('/h5/mtop.venus.shopcategoryservice.getcategorydetail') > -1) {
+    return eleme.parseSpuPage(data)
+  }
+
+  return false
+}
+
 export async function handle(platform, url, data) {
   let parse_data = {}
   if(platform == PLATFORM_MEITUAN) {
@@ -28,7 +48,7 @@ export async function handle(platform, url, data) {
   }
 
   if(platform == PLATFORM_ELEME) {
-
+    parse_data = handleEleme(url, data)
   }
 
   if(!parse_data) {

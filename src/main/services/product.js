@@ -188,7 +188,7 @@ export async function getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_exp
         // 药品图片
         spu_picture: spu ? spu.picture : '',
         // 规格标签
-        sku_label: spu ? spu.name : '',
+        sku_label: spu ? spu.sku_name : '',
         // 规格名称
         sku_name: item.name,
         // 价格
