@@ -1,6 +1,4 @@
-.sidebar-container {
-    width: 170px;
-}
+
 /* 整个滚动条轨道 */
 ::-webkit-scrollbar {
     width: 8px; /* 垂直滚动条宽度 */

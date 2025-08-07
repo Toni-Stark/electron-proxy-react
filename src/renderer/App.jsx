@@ -3,14 +3,15 @@ import {Button, Layout, message, Spin} from 'antd';
 import {Redirect, Route, Switch} from 'react-router-dom';
 import Sidebar from './components/Sidebar/index';
 import Dashboard from './pages/Dashboard';
-import UserList from './pages/UserList';
 import Setting from './pages/Setting';
 import NotFound from './pages/NotFound';
-import UserAdd from "./pages/UserAdd";
 import {getToken, removeToken} from './utils/auth'
 import Login from "./pages/Login";
-import EleList from "./pages/ElemeList";
 import MeiTuanList from "./pages/MeiTuanList";
+import MeiTuanSpuList from "./pages/MeiTuanSpuList";
+import BreadcrumbNav from "./components/BreadcrumbNav";
+import ElemeSpuList from "./pages/ElemeSpuList";
+import ElemeList from "./pages/ElemeList";
 
 const { Content, Footer, Header } = Layout;
 
@@ -61,7 +62,7 @@ class App extends Component {
         <Layout>
           <Header value={Header} style={{height: 50, padding: 0}}>
             <div style={flexEnd}>
-
+              <BreadcrumbNav />
               <Button
                   style={btnStyle}
                   type="default"
@@ -82,10 +83,10 @@ class App extends Component {
             {/* 路由配置 */}
             <Switch>
               <Route exact path="/" component={Dashboard} />
-              <Route path="/users/add" component={UserAdd} />
-              <Route path="/users" component={UserList} />
+              <Route path="/meituan/spuList/:shop_id/:spu_id" component={MeiTuanSpuList} />
               <Route path="/meituan" component={MeiTuanList} />
-              <Route path="/eleme" component={EleList} />
+              <Route path="/eleme/spuList/:shop_id/:spu_id" component={ElemeSpuList} />
+              <Route path="/eleme" component={ElemeList} />
               <Route path="/settings" component={Setting} />
               <Redirect from="/login" to="/" />
               <Route component={NotFound} />
@@ -115,7 +116,8 @@ const btnStyle = {
 }
 const flexEnd = {
   display: 'flex',
-  justifyContent: 'flex-end',
+  justifyContent: 'space-between',
   alignItems: 'center',
-  height: '100%'
+  height: '100%',
+  paddingLeft: '15px'
 }

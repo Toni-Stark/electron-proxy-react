@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {Card, Table, Button, Input, Tag, Icon, Avatar, message, Row, Col, Divider, Drawer} from 'antd';
 import {Link} from "react-router-dom";
+import {getTimes} from "../utils/tools";
+import ImagePreviewModal from "../components/ImagePreview";
 
 const { Search } = Input;
 
@@ -27,16 +29,24 @@ const DescriptionItem = ({ title, content }) => (
 );
 
 class MeiTuanList extends Component {
-  state = {
-    dataList: [],
-    total: 0,
-    page: 1,
-    refresh: false,
-    visible: false,
-    drawInfo: {}
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataList: [],
+      total: 0,
+      kw: '',
+      page: 1,
+      refresh: false,
+      visible: false,
+      drawInfo: {},
+      showPreview: false,
+      currentImage: '',
+    }
+    this.getDataList = this.getDataList.bind(this); // 手动绑定
+    this.refreshFun = this.refreshFun.bind(this); // 手动绑定
   }
-  async getDataList({page}){
-    const res = await window.drugApi.storeList('','meituan', page)
+  async getDataList({page, kw = ''}){
+    const res = await window.drugApi.storeList(kw,'meituan', page)
     console.log('当前数据列表:', res);
     let list = res.data.store_list.map((item, index)=>{
       return {...item, key: index+''}
@@ -45,22 +55,31 @@ class MeiTuanList extends Component {
       dataList: list,
       total: res.data.total,
       page: page,
+      kw: kw
     })
   }
   refreshFun = async() => {
-    this.setState({ refresh: true });
+    this.setState({ refresh: true, kw: '' });
     await this.getDataList({ page: 1})
     message.success('刷新成功');
     this.setState({ refresh: false });
   }
-  showDetail = async (info, record) => {
-    console.log(info, record, 'record');
+  showDetail = async (info) => {
+    console.log(info);
     const res = await window.drugApi.storeInfo(info.id);
     console.log(res,'res')
+    const data = {
+      ...res.data,
+      createdAt: getTimes(res.data.createdAt),
+      updatedAt: getTimes(res.data.updatedAt),
+  }
     this.setState({
       visible: true,
-      drawInfo: res.data
+      drawInfo: data
     })
+  }
+  naviToSpuList = (info) => {
+    this.props.history.push(`/meituan/spuList/${info.id}/${info.brand_id}`)
   }
   onClose = () => {
     this.setState({
@@ -71,12 +90,26 @@ class MeiTuanList extends Component {
   async componentDidMount() {
     await this.getDataList({ page: 1})
   }
-
+  handleSearch = async (e) => {
+    await this.getDataList({kw: e})
+  }
+  changeTable = async (e) => {
+    await this.getDataList({kw: this.state.kw, page: e})
+  }
+  showPreview = (imgUrl) => {
+    this.setState({
+      showPreview: true,
+      currentImage: imgUrl
+    });
+  };
+  closePreview = () => {
+    this.setState({ showPreview: false});
+  };
   render() {
     // 表格列定义
     const columns = [
       {
-        title: '店铺自增id',
+        title: 'id',
         dataIndex: 'id',
         key: 'id',
       },
@@ -105,24 +138,25 @@ class MeiTuanList extends Component {
         dataIndex: 'logo',
         key: 'logo',
         render: (logo) => {
-          return <Avatar src={logo} size={40}/>
+          return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
         },
       },
-      // {
-      //   title: '店铺地址',
-      //   dataIndex: 'address',
-      //   key: 'address',
-      // },
+      {
+        title: '店铺地址',
+        dataIndex: 'address',
+        key: 'address',
+        width: "30%",
+      },
       {
         title: '距离',
         dataIndex: 'distance',
         key: 'distance',
       },
-      {
-        title: '宣传语',
-        dataIndex: 'slogan',
-        key: 'slogan',
-      },
+      // {
+      //   title: '宣传语',
+      //   dataIndex: 'slogan',
+      //   key: 'slogan',
+      // },
 
       {
         title: '状态',
@@ -136,27 +170,33 @@ class MeiTuanList extends Component {
       {
         title: '操作',
         key: 'action',
-        render: (text, record) => (
+        fixed: 'right',
+        width: 200,
+        render: (info, record) => (
             <div size="middle" style={{display: 'flex'}}>
-              <Tag color="blue" onClick={()=>this.showDetail(text,record)}><Icon type="info-circle" theme="twoTone" />详情</Tag>
-              <Tag color="geekblue"><Link to="/meituan/spu?">SPU</Link></Tag>
+              <Button onClick={()=>this.showDetail(info)}>详情</Button>
+              <Button type="link" onClick={()=>this.naviToSpuList(info)}>商品列表</Button>
             </div>
         ),
       },
     ];
-    const {dataList, refresh, visible, drawInfo} = this.state;
+    const {dataList, refresh, visible, drawInfo, page, total,currentImage,showPreview} = this.state;
 
     return (
       <div>
         <div style={{
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
           padding: 0
         }}>
-          <Search style={{minWidth: 280,width: 280}} placeholder="搜索店铺名称和地址" enterButton />
+          <Search
+              style={{minWidth: 280,width: 280}}
+              placeholder="搜索店铺名称和地址"
+              enterButton
+              onSearch={this.handleSearch}
+          />
           <Button
-              style={{width: 100}}
+              style={{width: 80, marginLeft: 10}}
               type="primary"
               block
               loading={refresh}
@@ -165,7 +205,21 @@ class MeiTuanList extends Component {
             刷新
           </Button>
         </div>
-        <Table style={{marginTop: 10}} columns={columns} dataSource={dataList} />
+        <Table
+            style={{marginTop: 10}}
+            columns={columns}
+            size="middle"
+            scroll={{ x: 1300 }}
+            pagination={{
+              position: 'bottom',
+              pageSize: 30,
+              current: page,
+              total: total,
+              showTotal: total => `共 ${total} 条`,
+              onChange: this.changeTable,  // 页码改变回调
+            }}
+            dataSource={dataList}
+        />
         <Drawer
             width={640}
             placement="right"
@@ -205,6 +259,11 @@ class MeiTuanList extends Component {
             </Col>
           </Row>
         </Drawer>
+        <ImagePreviewModal
+            visible={showPreview}
+            imageUrl={currentImage}
+            onClose={this.closePreview}
+        />
       </div>
     );
   }

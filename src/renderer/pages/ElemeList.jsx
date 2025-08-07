@@ -1,124 +1,291 @@
 import React, { Component } from 'react';
-import { Card, Table, Button, Input, Tag, Icon } from 'antd';
-import { Link } from 'react-router-dom';
+import {Card, Table, Button, Input, Tag, Icon, Avatar, message, Row, Col, Divider, Drawer} from 'antd';
+import {Link} from "react-router-dom";
+import {getTimes} from "../utils/tools";
+import ImagePreviewModal from "../components/ImagePreview";
 
 const { Search } = Input;
 
-// 用户数据
-const userData = [
-  {
-    key: '1',
-    name: '张三',
-    age: 32,
-    email: 'zhangsan@example.com',
-    role: '管理员',
-    status: '活跃',
-  },
-  {
-    key: '2',
-    name: '李四',
-    age: 42,
-    email: 'lisi@example.com',
-    role: '编辑',
-    status: '离线',
-  },
-  {
-    key: '3',
-    name: '王五',
-    age: 32,
-    email: 'wangwu@example.com',
-    role: '访客',
-    status: '活跃',
-  },
-  {
-    key: '4',
-    name: '赵六',
-    age: 28,
-    email: 'zhaoliu@example.com',
-    role: '编辑',
-    status: '活跃',
-  },
-  {
-    key: '5',
-    name: '钱七',
-    age: 36,
-    email: 'qianqi@example.com',
-    role: '访客',
-    status: '禁用',
-  },
-];
+const DescriptionItem = ({ title, content }) => (
+    <div
+        style={{
+          fontSize: 14,
+          lineHeight: '22px',
+          marginBottom: 7,
+          color: 'rgba(0,0,0,0.65)',
+        }}
+    >
+      <p
+          style={{
+            marginRight: 8,
+            display: 'inline-block',
+            color: 'rgba(0,0,0,0.85)',
+          }}
+      >
+        {title}:
+      </p>
+      {content}
+    </div>
+);
 
-class EleList extends Component {
+class ElemeList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataList: [],
+      total: 0,
+      kw: '',
+      page: 1,
+      refresh: false,
+      visible: false,
+      drawInfo: {},
+      showPreview: false,
+      currentImage: '',
+    }
+    this.getDataList = this.getDataList.bind(this); // 手动绑定
+    this.refreshFun = this.refreshFun.bind(this); // 手动绑定
+  }
+  async getDataList({page, kw = ''}){
+    const res = await window.drugApi.storeList(kw,'eleme', page)
+    console.log('当前数据列表:', res);
+    let list = res.data.store_list.map((item, index)=>{
+      return {...item, key: index+''}
+    })
+    this.setState({
+      dataList: list,
+      total: res.data.total,
+      page: page,
+      kw: kw
+    })
+  }
+  refreshFun = async() => {
+    this.setState({ refresh: true, kw: '' });
+    await this.getDataList({ page: 1})
+    message.success('刷新成功');
+    this.setState({ refresh: false });
+  }
+  showDetail = async (info) => {
+    console.log(info);
+    const res = await window.drugApi.storeInfo(info.id);
+    console.log(res,'res')
+    const data = {
+      ...res.data,
+      createdAt: getTimes(res.data.createdAt),
+      updatedAt: getTimes(res.data.updatedAt),
+    }
+    this.setState({
+      visible: true,
+      drawInfo: data
+    })
+  }
+  naviToSpuList = (info) => {
+    this.props.history.push(`/eleme/spuList/${info.id}/${info.brand_id}`)
+  }
+  onClose = () => {
+    this.setState({
+      visible: false,
+      drawInfo: {}
+    });
+  }
+  async componentDidMount() {
+    await this.getDataList({ page: 1})
+  }
+  handleSearch = async (e) => {
+    await this.getDataList({kw: e})
+  }
+  changeTable = async (e) => {
+    await this.getDataList({kw: this.state.kw, page: e})
+  }
+  showPreview = (imgUrl) => {
+    this.setState({
+      showPreview: true,
+      currentImage: imgUrl
+    });
+  };
+  closePreview = () => {
+    this.setState({ showPreview: false});
+  };
   render() {
     // 表格列定义
     const columns = [
       {
-        title: '姓名',
+        title: 'id',
+        dataIndex: 'id',
+        key: 'id',
+      },
+      // {
+      //   title: '所属平台',
+      //   dataIndex: 'platform',
+      //   key: 'platform',
+      // },
+      {
+        title: '品牌id',
+        dataIndex: 'brand_id',
+        key: 'brand_id',
+      },
+      // {
+      //   title: '店铺三方id',
+      //   dataIndex: 'third_id',
+      //   key: 'third_id',
+      // },
+      {
+        title: '店铺名称',
         dataIndex: 'name',
         key: 'name',
       },
       {
-        title: '年龄',
-        dataIndex: 'age',
-        key: 'age',
+        title: '店铺图片',
+        dataIndex: 'logo',
+        key: 'logo',
+        render: (logo) => {
+          return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
+        },
       },
       {
-        title: '邮箱',
-        dataIndex: 'email',
-        key: 'email',
+        title: '店铺地址',
+        dataIndex: 'address',
+        key: 'address',
+        width: "30%",
       },
       {
-        title: '角色',
-        dataIndex: 'role',
-        key: 'role',
+        title: '距离',
+        dataIndex: 'distance',
+        key: 'distance',
       },
+      // {
+      //   title: '宣传语',
+      //   dataIndex: 'slogan',
+      //   key: 'slogan',
+      // },
+
       {
         title: '状态',
         dataIndex: 'status',
         key: 'status',
         render: (status) => {
-          // 根据状态设置不同颜色的标签
-          let color = status === '活跃' ? 'green' :
-                      status === '离线' ? 'orange' : 'red';
-          return <Tag color={color}>{status}</Tag>;
+          let color = status === 1 ? 'green' : 'red';
+          return <Tag color={color}>{status === 1 ? '正常' : '异常'}</Tag>;
         },
       },
       {
         title: '操作',
         key: 'action',
-        render: (text, record) => (
-          <div size="middle">
-            <a href="#"><Icon type="edit" /></a>
-            <a href="#"><Icon type="delete" /></a>
-          </div>
+        fixed: 'right',
+        width: 200,
+        render: (info, record) => (
+            <div size="middle" style={{display: 'flex'}}>
+              <Button onClick={()=>this.showDetail(info)}>详情</Button>
+              <Button type="link" onClick={()=>this.naviToSpuList(info)}>商品列表</Button>
+            </div>
         ),
       },
     ];
+    const {dataList, refresh, visible, drawInfo, page, total,currentImage,showPreview} = this.state;
 
     return (
-      <div>
-        <Card>
+        <div>
           <div style={{
-            marginBottom: 16,
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            padding: 0
           }}>
-            <h2>用户列表</h2>
-            <div>
-              <Search placeholder="搜索用户" enterButton />
-              <Button type="primary">
-                <Icon type="plus" /> 新增用户
-              </Button>
-            </div>
+            <Search
+                style={{minWidth: 280,width: 280}}
+                placeholder="搜索店铺名称和地址"
+                enterButton
+                onSearch={this.handleSearch}
+            />
+            <Button
+                style={{width: 80, marginLeft: 10}}
+                type="primary"
+                block
+                loading={refresh}
+                onClick={this.refreshFun}
+            >
+              刷新
+            </Button>
           </div>
-
-          {/* 用户表格 */}
-          <Table columns={columns} dataSource={userData} />
-        </Card>
-      </div>
+          <Table
+              style={{marginTop: 10}}
+              columns={columns}
+              size="middle"
+              scroll={{ x: 1300 }}
+              pagination={{
+                position: 'bottom',
+                pageSize: 30,
+                current: page,
+                total: total,
+                showTotal: total => `共 ${total} 条`,
+                onChange: this.changeTable,  // 页码改变回调
+              }}
+              dataSource={dataList}
+          />
+          <Drawer
+              width={640}
+              placement="right"
+              closable={false}
+              onClose={this.onClose}
+              visible={visible}
+          >
+            <div style={titleStyle}>
+              <Avatar src={drawInfo.logo} size={50} style={{marginRight: 10}}/>
+              <p style={evalStyle}>{drawInfo.name}</p>
+            </div>
+            <Divider />
+            <Row>
+              <Col span={24}>
+                <DescriptionItem title="店铺地址" content={drawInfo.address} />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <DescriptionItem title="品牌id" content={drawInfo.brand_id} />
+              </Col>
+              <Col span={12}>
+                <DescriptionItem title="距离" content={drawInfo.distance} />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <DescriptionItem title="创建时间" content={drawInfo.createdAt} />
+              </Col>
+              <Col span={12}>
+                <DescriptionItem title="更新时间" content={drawInfo.updatedAt} />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <DescriptionItem title="宣传语" content={drawInfo.slogan}/>
+              </Col>
+            </Row>
+          </Drawer>
+          <ImagePreviewModal
+              visible={showPreview}
+              imageUrl={currentImage}
+              onClose={this.closePreview}
+          />
+        </div>
     );
   }
 }
 
-export default EleList;
+export default ElemeList;
+
+const pStyle = {
+  fontSize: 16,
+  color: 'rgba(0,0,0,0.85)',
+  lineHeight: '24px',
+  display: 'block',
+  marginBottom: 16,
+  fontWeight: 'bold'
+};
+const evalStyle = {
+  fontSize: 25,
+  display: 'block',
+  margin: 0,
+  lineHeight: '50px'
+};
+const titleStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
