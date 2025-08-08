@@ -108,7 +108,7 @@ export async function getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_exp
       raw: true
     })
 
-    if(spu_id_list) {
+    if(spu_id_list.length > 0) {
       spu_id_list = spu_id_list.map((item) => {
         return item.spu_id
       })
@@ -120,7 +120,7 @@ export async function getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_exp
   if(spu_id) {
     spu_id_list.push(spu_id)
   }
-
+  
   // 处理一个组合查询情况.
   if(spu_id_list.length > 0) {
     cond['spu_id'] = {
