@@ -12,7 +12,7 @@ export default class ImagePreviewModal extends React.Component {
                 visible={visible}
                 footer={null}
                 onCancel={onClose}
-                width="60%"
+                width="45%"
                 style={{ top: 80 }}
             >
                 <img

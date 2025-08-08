@@ -3,18 +3,43 @@
     display: flex;
 }
 .logo .name {
-    height: 50px;
+    height: 36px;
     color: #fff;
-    font-size: 24px;
+    font-size: 17px;
+    width: 100%;
     font-weight: bold;
-    line-height: 50px;
-
+    line-height: 36px;
+    text-align: center;
     white-space: nowrap;
-    animation: scroll 10s linear infinite;
+    /*animation: scroll 10s linear infinite;*/
     padding: 0 5px;
 }
 
 @keyframes scroll {
     0% { transform: translateX(0); }
     100% { transform: translateX(-100%); }
+}
+.ant-menu-vertical .ant-menu-item, .ant-menu-vertical-left .ant-menu-item, .ant-menu-vertical-right .ant-menu-item, .ant-menu-inline .ant-menu-item, .ant-menu-vertical .ant-menu-submenu-title, .ant-menu-vertical-left .ant-menu-submenu-title, .ant-menu-vertical-right .ant-menu-submenu-title, .ant-menu-inline .ant-menu-submenu-title {
+    margin: 0 !important;
+}
+.ant-layout-sider-children {
+    display: flex !important;
+    flex-direction: column;
+    height: 100%;
+}
+.body_sid {
+    flex: 1;
+}
+.out_login {
+    width: 100%;
+    color: rgba(255, 255, 255, 0.65);
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+    padding-right: 10px;
+}
+.out_login:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 21, 41, 0.84);
 }
