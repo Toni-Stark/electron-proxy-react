@@ -23,21 +23,11 @@ function isCrawlHost(host) {
 }
 
 module.exports = {
-  // 拦截请求
-  beforeSendRequest(requestDetail) {
-    const link_info = new URL(requestDetail.url)
-    if(!isCrawlHost(link_info.host)) {
-      return {
-        requestOptions: requestDetail.requestOptions
-      }
-    }
-    // console.log(requestDetail.requestData.toString())
-    // 这里可以增加一些其他的东西过来. 例如使用的哪个代理撒的. 先不管吧. 我们只是拦截其他的网络请求而已.
-    return {
-      requestOptions: requestDetail.requestOptions
-    }
-  },
+  *beforeDealHttpsRequest(requestDetail) {
+    const platform = isCrawlHost(requestDetail.host)
 
+    return platform ? true : false;
+  },
   // 拦截响应. 仅仅只抓取固定的域名信息.
   beforeSendResponse(requestDetail, responseDetail) {
     // 这里可以只获取指定的json地址就可以了.
