@@ -4,7 +4,7 @@ const fs = require('fs')
 const rule = require('./rule')
 const osProxy = require('cross-os-proxy')
 const os = require('os')
-const { exec } = require('child_process')
+const { exec, execSync } = require('child_process')
 
 // 代理配置
 // 这里的rule文件. 最好能直接加载进来. 
@@ -25,6 +25,21 @@ function ensureCertDir() {
   const certDir = path.join(os.homedir(), '.anyproxy/certificates')
   if (!fs.existsSync(certDir)) {
     fs.mkdirSync(certDir, { recursive: true })
+  }
+}
+
+function isAdmin() {
+  try {
+    if (os.platform() === 'win32') {
+      // Windows 系统：通过 net session 命令检查（管理员可执行，普通用户会报错）
+      execSync('net session', { stdio: 'ignore' });
+      return true;
+    } else {
+      // Unix-like 系统（Linux/macOS）：root 用户 UID 为 0
+      return process.getuid() === 0;
+    }
+  } catch (err) {
+    return false;
   }
 }
 
@@ -71,6 +86,11 @@ async function startProxy() {
   }
 
   try {
+    if(!isAdmin()) {
+      console.log('current user is not admin')
+      return false
+    }
+
     ensureCertDir()
     const ret = await generateDefaultCert()
 
@@ -84,7 +104,7 @@ async function startProxy() {
       console.log(`AnyProxy start success, port: ${proxyConfig.port}`)
       await osProxy.setProxy('127.0.0.1', proxyConfig.port)
       // 然后需要重启一下网络.
-      await exec(`netsh winhttp set proxy 127.0.0.1:${proxyConfig.port}`);
+      await execSync(`netsh winhttp set proxy 127.0.0.1:${proxyConfig.port}`);
     })
     
     proxyServer.on('error', (e) => {
@@ -105,8 +125,8 @@ async function stopProxy() {
   // 强制关闭的时候 也走代理一下 去清理一下服务
   try{
     // 这里调用会出现vbscript异常问题
-    await osProxy.closeProxy()
     await exec('netsh winhttp reset proxy')
+    await osProxy.closeProxy()
   }catch(e) {
     console.log(e)
   }
