@@ -168,14 +168,14 @@ class ElemeList extends Component {
         width: "30%",
       },
       {
-        title: '距离',
-        dataIndex: 'distance',
-        key: 'distance',
-      },
-      {
         title: '更新时间',
         dataIndex: 'updatedAt',
         key: 'updatedAt',
+      },
+      {
+        title: '距离',
+        dataIndex: 'distance',
+        key: 'distance',
       },
       // {
       //   title: '宣传语',
@@ -234,6 +234,7 @@ class ElemeList extends Component {
               style={{marginTop: 10}}
               columns={columns}
               size="middle"
+              locale={{ emptyText: '暂无数据' }}
               scroll={dataList.length> 0 ? { x: 1300, y: 'calc(100vh - 300px)' }: {}}
               pagination={{
                 position: 'bottom',

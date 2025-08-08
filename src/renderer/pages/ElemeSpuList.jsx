@@ -319,6 +319,7 @@ class ElemeSpuList extends Component {
             style={{marginTop: 10}}
             columns={columns}
             size="middle"
+            locale={{ emptyText: '暂无数据' }}
             scroll={dataList.length> 0 ? { x: 1300, y: 'calc(100vh - 300px)' }: {}}
             pagination={{
               position: 'bottom',

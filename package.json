@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "药店020商圈调研工具",
   "main": "dist/main/main.js",
+  "homepage": "/",
   "scripts": {
     "dev": "vite",
     "build:vite": "vite build --outDir dist/renderer",

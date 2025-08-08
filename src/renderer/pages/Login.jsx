@@ -57,7 +57,7 @@ class Login extends Component {
                             size={100}
                             icon="user"
                         />
-                        <h2 style={{ marginTop: 16, zIndex: 3 }}>Token 登录</h2>
+                        <h2 style={{ marginTop: 16, zIndex: 3 }}>客户端密码</h2>
                     </div>
 
                     <Input.Password
