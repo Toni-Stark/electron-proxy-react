@@ -11,7 +11,7 @@ const { exec } = require('child_process')
 const proxyConfig = {
   port: 16888, // 代理端口
   enableHttps: true, // 启用 HTTPS 拦截
-  forceProxyHttps: false,
+  forceProxyHttps: false, // 这里走默认的false. 只拦截该拦截的就行了  之前的方式有问题. 会拦截所有的.
   rule: rule, // 代理规则文件路径
   dbPath: path.join(__dirname, '../proxyDB'), // 缓存路径
   webInterface: {
@@ -83,6 +83,8 @@ async function startProxy() {
     proxyServer.on('ready', async () => {
       console.log(`AnyProxy start success, port: ${proxyConfig.port}`)
       await osProxy.setProxy('127.0.0.1', proxyConfig.port)
+      // 然后需要重启一下网络.
+      await exec(`netsh winhttp set proxy 127.0.0.1:${proxyConfig.port}`);
     })
     
     proxyServer.on('error', (e) => {
