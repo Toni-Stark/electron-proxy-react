@@ -31,6 +31,7 @@ class Setting extends Component {
   }
   updateStatus = async () => {
     const current = await window.drugApi.getStatus()
+    console.log('当前状态:', current)
     this.setState({
       running: current.running,
       port: current.port,
@@ -56,10 +57,10 @@ class Setting extends Component {
           const success = await window.drugApi.start()
           if (success) {
             openMessage('success', '代理启动成功')
-            await this.updateStatus()
           } else {
             openMessage('error', '代理启动失败，请查看控制台日志')
           }
+          await this.updateStatus()
         } else {
           const success = await window.drugApi.stop()
           if (success) {
