@@ -1,0 +1,29 @@
+.tags_style {
+    height: 36px;
+    display: flex;
+    align-items: flex-end;
+    padding-top: 2px;
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    background: #ffffff;
+}
+::-webkit-scrollbar {
+    width: 3px !important; /* 垂直滚动条宽度 */
+    height: 3px !important; /* 水平滚动条高度 */
+}
+.tags_style .tag_style {
+    border-radius: 0;
+    height: 34px;
+    border: 0;
+    border-bottom: 2px solid #f8f8f8;
+    font-size: 12px;
+    padding: 0 12px;
+    line-height: 32px;
+    margin: 0;
+    background: #f8f8f8;
+}
+.tags_style .tag_style.active {
+    background: #ffffff;
+    border-bottom-color: #6ec4f3;
+}

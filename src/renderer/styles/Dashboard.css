@@ -1,0 +1,65 @@
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-top: 15px;
+}
+.card {
+    width: 32%;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    min-width: 280px;
+    border: 1px solid #d9d9d9;
+    padding: 9px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+.title {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+.title .main {
+    display: flex;
+    align-items: flex-start;
+}
+.main .avatar_view {
+    min-width: 40px;
+    min-height: 40px;
+}
+.main .avatar_title {
+    margin-top: 10px;
+    margin-left: 10px;
+    font-size: 14px;
+    color: #000;
+}
+.middle_label {
+    font-size: 12px;
+    margin-top: 6px;
+}
+.middle_label span {
+    color: #000c17;
+}
+.flex_label {
+    display: flex;
+    justify-content: space-between;
+}
+.posi_right {
+    position: absolute;
+    width: 100px;
+    height: 35px;
+    background: #217dcd;
+    margin: 0;
+    color: #ffffff;
+    text-align: center;
+    transform: rotate(45deg);
+    right: -37px;
+    top: -9px;
+}
+.posi_right .text {
+    transform: rotate(-45deg);
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}

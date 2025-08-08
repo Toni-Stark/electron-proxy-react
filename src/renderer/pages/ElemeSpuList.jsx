@@ -25,15 +25,15 @@ const { Search } = Input;
 const columnsKeys = {
     shop_name: '店铺名称',
     shop_address: '店铺地址',
-    shop_picture: '店铺logo',
+    // shop_picture: '店铺logo',
     product_name: '药品名称',
-    spu_picture: '药品图片',
+    // spu_picture: '药品图片',
     sku_label: '规格标签',
     sku_name: '规格名称',
     price: '价格',
     origin_price: '原价',
     stock: '库存',
-    sku_picture: 'sku图片',
+    // sku_picture: 'sku图片',
     min_order_count: '最小购买数',
 }
 const handleExport = async (fileName, data) => {
@@ -104,6 +104,7 @@ class ElemeSpuList extends Component {
       spu_id: '',
       shop_id: '',
     };
+    console.log(this.props)
     this.getDataList = this.getDataList.bind(this); // 手动绑定
     this.uploadAllData = this.uploadAllData.bind(this); // 手动绑定
     this.refreshFun = this.refreshFun.bind(this); // 手动绑定

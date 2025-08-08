@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import Menu from 'antd/lib/menu'
 import Icon from 'antd/lib/icon'
 import Layout from 'antd/lib/layout'
-import Button from 'antd/lib/button'
 
 import 'antd/lib/menu/style/index.css';
 import 'antd/lib/button/style/index.css';
@@ -16,11 +15,48 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 class Sidebar extends Component {
-    state = {
-        collapsed: false,
-        // 当前选中的菜单键
-        selectedKey: ['dashboard']
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            collapsed: false,
+            // 当前选中的菜单键
+            selectedKey: ['/'],
+            route: [
+                {
+                    key: '/',
+                    name: '控制台',
+                    icon: 'dashboard',
+                    hash: ''
+                },
+                // {
+                //     key: '/dashboard',
+                //     name: '店铺调研',
+                //     icon: 'dashboard',
+                //     children: [
+                //         {
+                //             key: '/meituan',
+                //             name: '美团',
+                //             icon: 'shop',
+                //             hash: ''
+                //         },
+                //         {
+                //             key: '/eleme',
+                //             name: '饿了么',
+                //             icon: 'shop',
+                //             hash: ''
+                //         }
+                //     ]
+                // },
+                {
+                    key: '/settings',
+                    name: '系统设置',
+                    icon: 'setting',
+                    hash: ''
+                }
+            ]
+        };
+    }
+
 
     toggleCollapsed = () => {
         this.setState({
@@ -33,17 +69,21 @@ class Sidebar extends Component {
             selectedKey: [key]
         });
     };
-
+    naviTo = (item) => {
+        console.log(item, 'item')
+        this.props.addLinks({...item, type: 'add'})
+    }
     render() {
+        const { route } = this.state;
         return (
             <Sider
                 trigger={null}
                 collapsible
                 collapsed={this.state.collapsed}
+                style={{width: 160}}
                 className="sidebar-container"
             >
                 <div className="logo">
-                    <div className="name"> 商调工具 </div>
                     <div className="name"> 商调工具 </div>
                 </div>
                 <div className="body_sid">
@@ -53,64 +93,52 @@ class Sidebar extends Component {
                         selectedKeys={this.state.selectedKey}
                         onSelect={this.handleMenuSelect}
                     >
-                        <Menu.Item key="dashboard">
-                            <Link to="/">
-                                <Icon type="dashboard" />
-                                <span>店铺调研</span>
-                            </Link>
-                        </Menu.Item>
-
-                        <SubMenu
-                            key="store"
-                            title={
-                                <span>
-                                <Icon type="shop" />
-                                <span>店铺调研</span>
-                            </span>
-                            }
-                        >
-                            <Menu.Item key="meituan">
-                                <Link to="/meituan">美团</Link>
-                            </Menu.Item>
-                            <Menu.Item key="eleme">
-                                <Link to="/eleme">饿了么</Link>
-                            </Menu.Item>
-                        </SubMenu>
-                        {/*<SubMenu*/}
-                        {/*    key="user"*/}
-                        {/*    title={*/}
-                        {/*        <span>*/}
-                        {/*            <Icon type="user" />*/}
-                        {/*            <span>用户管理</span>*/}
-                        {/*        </span>*/}
-                        {/*    }*/}
-                        {/*>*/}
-                        {/*    <Menu.Item key="user-list">*/}
-                        {/*        <Link to="/users">用户列表</Link>*/}
-                        {/*    </Menu.Item>*/}
-                        {/*    <Menu.Item key="user-add">*/}
-                        {/*        <Link to="/users/add">添加用户</Link>*/}
-                        {/*    </Menu.Item>*/}
-                        {/*</SubMenu>*/}
-
-                        <Menu.Item key="settings">
-                            <Link to="/settings">
-                                <Icon type="setting" />
-                                <span>系统设置</span>
-                            </Link>
-                        </Menu.Item>
+                        {
+                            route.map((item, index)=>{
+                                if(item.children){
+                                    return (
+                                        <SubMenu
+                                            key={item.key}
+                                            title={
+                                                <span>
+                                                    <Icon type={item.icon} />
+                                                    <span>{item.name}</span>
+                                                </span>
+                                            }
+                                        >
+                                            {
+                                                item.children.map((child, index)=>{
+                                                    return (
+                                                        <Menu.Item key={child.key}>
+                                                            <div onClick={()=>this.naviTo(child)}>{child.name}</div>
+                                                        </Menu.Item>
+                                                    )
+                                                })
+                                            }
+                                        </SubMenu>
+                                    )
+                                }else {
+                                    return (
+                                        <Menu.Item key={item.key}>
+                                            <div onClick={()=>this.naviTo(item)}>
+                                                <Icon type={item.icon} />
+                                                <span>{item.name}</span>
+                                            </div>
+                                        </Menu.Item>
+                                    )
+                                }
+                            })
+                        }
                     </Menu>
                 </div>
                 <div className="footer_sid">
-                    <Button
-                        style={btnStyle}
-                        type="default"
-                        block
-                        icon="poweroff"
-                        onClick={this.getOut}
+                    <div
+                        className="out_login"
+                        onClick={this.props.getOut}
                     >
+                        <Icon type="logout" style={{ marginRight: 7 }} />
                         退出登录
-                    </Button>
+                    </div>
                 </div>
             </Sider>
         );
@@ -118,10 +146,3 @@ class Sidebar extends Component {
 }
 
 export default Sidebar;
-const btnStyle = {
-    width: '100px',
-    marginRight: '10px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-}
