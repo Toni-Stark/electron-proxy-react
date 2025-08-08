@@ -2,7 +2,6 @@ const AnyProxy = require('anyproxy')
 const path = require('path')
 const fs = require('fs')
 const rule = require('./rule')
-const osProxy = require('cross-os-proxy')
 const os = require('os')
 const { exec, execSync } = require('child_process')
 
