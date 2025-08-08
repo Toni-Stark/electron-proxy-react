@@ -34,7 +34,9 @@ function parseSpu(third_id, cate_foods_list) {
   cate_foods_list.map((cate_foods) => {
     const foods = cate_foods.foods
     const cateId = cate_foods.cat1Id
-
+    if(!foods) {
+      return
+    }
     // 饿了么目前来看 只有spu. 没看到规格这种. 所以sku的名字为空. spu只有单独的spu_id.
     foods.map((spu) => {
       const currentPrice = spu.item.currentPrice
