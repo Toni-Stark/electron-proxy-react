@@ -13,7 +13,7 @@
   },
   "build": {
     "appId": "com.360zhishu.drug.spider",
-    "productName": "Python工具",
+    "productName": "商调工具",
     "directories": {
       "output": "release",
       "app": "."

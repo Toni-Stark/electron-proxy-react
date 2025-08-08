@@ -41,8 +41,8 @@ class Sidebar extends Component {
                 className="sidebar-container"
             >
                 <div className="logo">
-                    <div className="name"> 药店020商圈调研工具 </div>
-                    <div className="name"> 药店020商圈调研工具 </div>
+                    <div className="name"> 商调工具 </div>
+                    <div className="name"> 商调工具 </div>
                 </div>
                 <Menu
                     theme="dark"
@@ -53,7 +53,7 @@ class Sidebar extends Component {
                     <Menu.Item key="dashboard">
                         <Link to="/">
                             <Icon type="dashboard" />
-                            <span>仪表盘</span>
+                            <span>店铺调研</span>
                         </Link>
                     </Menu.Item>
 
