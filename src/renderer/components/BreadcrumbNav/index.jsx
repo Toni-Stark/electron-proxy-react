@@ -1,6 +1,9 @@
 import React from 'react';
-import { Breadcrumb } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
+
+import Breadcrumb from 'antd/lib/breadcrumb'
+import 'antd/lib/breadcrumb/style/index.css';
+
 import './index.css';
 
 const BreadcrumbNav = ({ location }) => {

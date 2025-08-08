@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
-import { Menu, Icon, Layout } from 'antd';
 import { Link } from 'react-router-dom';
+import Menu from 'antd/lib/menu'
+import Icon from 'antd/lib/icon'
+import Layout from 'antd/lib/layout'
+
+import 'antd/lib/menu/style/index.css';
+import 'antd/lib/icon/style/index.css';
+import 'antd/lib/layout/style/index.css';
+
 import './index.css'
+
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 

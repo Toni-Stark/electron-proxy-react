@@ -14,8 +14,6 @@ function createWindow() {
     height: 700,
     icon: path.join(__dirname, '../renderer/logo_256.png'),
     webPreferences: {
-      nodeIntegration: false, // Electron 12+ 默认禁用
-      contextIsolation: true, // 启用上下文隔离
       preload: path.join(__dirname, 'preload.js') // 预加载脚本路径
     }
   })

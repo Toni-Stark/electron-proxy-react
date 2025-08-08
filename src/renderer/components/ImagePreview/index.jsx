@@ -1,6 +1,8 @@
 import React from 'react';
-import { Modal } from 'antd';
 
+import Modal from 'antd/lib/modal'
+
+import 'antd/lib/modal/style/index.css';
 export default class ImagePreviewModal extends React.Component {
     render() {
         const { visible, imageUrl, onClose } = this.props;

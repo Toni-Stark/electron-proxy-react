@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import {Button, Layout, message, Spin} from 'antd';
+import Layout from 'antd/lib/layout'
+import Button from 'antd/lib/button'
+import Spin from 'antd/lib/spin'
 import {Redirect, Route, Switch} from 'react-router-dom';
 import Sidebar from './components/Sidebar/index';
 import Dashboard from './pages/Dashboard';
@@ -12,6 +14,10 @@ import MeiTuanSpuList from "./pages/MeiTuanSpuList";
 import BreadcrumbNav from "./components/BreadcrumbNav";
 import ElemeSpuList from "./pages/ElemeSpuList";
 import ElemeList from "./pages/ElemeList";
+
+import 'antd/lib/button/style/index.css';
+import 'antd/lib/layout/style/index.css';
+import 'antd/lib/spin/style/index.css';
 
 const { Content, Footer, Header } = Layout;
 

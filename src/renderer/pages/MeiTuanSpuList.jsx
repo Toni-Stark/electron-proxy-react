@@ -1,8 +1,20 @@
 import React, { Component } from 'react';
-import { Table, Button, Input,Avatar, message} from 'antd';
 import ImagePreviewModal from "../components/ImagePreview";
 import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
+import saveAs from 'file-saver';
+
+import Table from 'antd/lib/table'
+import Button from 'antd/lib/button'
+import Input from 'antd/lib/input'
+import Avatar from 'antd/lib/avatar'
+import message from 'antd/lib/message'
+
+import 'antd/lib/table/style/index.css';
+import 'antd/lib/button/style/index.css';
+import 'antd/lib/input/style/index.css';
+import 'antd/lib/avatar/style/index.css';
+import 'antd/lib/message/style/index.css';
+
 import '../styles/MeiTuanSpuList.css'
 
 const { Search } = Input;

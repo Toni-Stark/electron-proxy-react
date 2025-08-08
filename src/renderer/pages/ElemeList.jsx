@@ -1,6 +1,26 @@
 import React, { Component } from 'react';
-import {Card, Table, Button, Input, Tag, Icon, Avatar, message, Row, Col, Divider, Drawer} from 'antd';
-import {Link} from "react-router-dom";
+
+import Table from 'antd/lib/table'
+import Button from 'antd/lib/button'
+import Input from 'antd/lib/input'
+import Tag from 'antd/lib/tag'
+import Avatar from 'antd/lib/avatar'
+import message from 'antd/lib/message'
+import Row from 'antd/lib/row'
+import Col from 'antd/lib/col'
+import Divider from 'antd/lib/divider'
+import Drawer from 'antd/lib/drawer'
+
+import 'antd/lib/table/style/index.css';
+import 'antd/lib/button/style/index.css';
+import 'antd/lib/input/style/index.css';
+import 'antd/lib/tag/style/index.css';
+import 'antd/lib/avatar/style/index.css';
+import 'antd/lib/message/style/index.css';
+import 'antd/lib/divider/style/index.css';
+import 'antd/lib/drawer/style/index.css';
+
+
 import {getTimes} from "../utils/tools";
 import ImagePreviewModal from "../components/ImagePreview";
 

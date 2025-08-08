@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { Card, Form, Switch,notification} from 'antd';
+
+import Card from 'antd/lib/card'
+import Form from 'antd/lib/form'
+import Switch from 'antd/lib/switch'
+import notification from 'antd/lib/notification'
+
+import 'antd/lib/card/style/index.css';
+import 'antd/lib/form/style/index.css';
+import 'antd/lib/switch/style/index.css';
+import 'antd/lib/notification/style/index.css';
+
 
 const FormItem = Form.Item;
 

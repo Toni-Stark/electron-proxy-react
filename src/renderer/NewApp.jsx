@@ -3,6 +3,7 @@ import Layout from 'antd/lib/layout'
 import Button from 'antd/lib/button'
 
 import 'antd/lib/button/style/index.css';
+import 'antd/lib/layout/style/index.css';
 
 import {getToken, removeToken} from './utils/auth'
 const { Content, Footer, Header } = Layout;
@@ -23,7 +24,7 @@ class App extends Component {
   render() {
     const { isAuthenticated, loading } = this.state;
 
-    
+
     return (
       <Layout style={{ minHeight: '100vh' }}>
         <h3>hihihih</h3>

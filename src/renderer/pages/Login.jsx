@@ -1,5 +1,17 @@
 import React, { Component } from 'react';
-import {Icon , Button, message, Input, Avatar} from 'antd';
+
+import Icon from 'antd/lib/icon'
+import Button from 'antd/lib/button'
+import Input from 'antd/lib/input'
+import Avatar from 'antd/lib/avatar'
+import message from 'antd/lib/message'
+
+import 'antd/lib/icon/style/index.css';
+import 'antd/lib/button/style/index.css';
+import 'antd/lib/input/style/index.css';
+import 'antd/lib/avatar/style/index.css';
+import 'antd/lib/message/style/index.css';
+
 import { setToken } from '../utils/auth';
 import '../styles/Login.css'
 class Login extends Component {
