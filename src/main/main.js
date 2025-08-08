@@ -35,8 +35,6 @@ function createWindow() {
       protocol: 'file:',
       slashes: true
     }))
-
-    mainWindow.webContents.openDevTools()
   }
 
   // 当窗口关闭时触发

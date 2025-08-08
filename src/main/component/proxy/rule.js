@@ -87,7 +87,7 @@ module.exports = {
         'body': responseDetail.response.body.toString(),
         'resp_headers': headers,
         'req_headers': requestDetail.requestOptions.headers,
-        'req_params': requestDetail.requestData.toJSON()
+        'req_params': requestDetail.requestData.toString()
       }),
       status: -2
     }).then(() => {
