@@ -106,6 +106,7 @@ async function stopProxy() {
   try{
     // 这里调用会出现vbscript异常问题
     await osProxy.closeProxy()
+    await exec('netsh winhttp reset proxy')
   }catch(e) {
     console.log(e)
   }
