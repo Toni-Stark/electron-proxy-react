@@ -2,12 +2,12 @@
 function isCrawlHost(host) {
   const domains = {
     'meituan': [
-      'meituan.com',
-      'meituan.net',  
+      'hcapi-wx.waimai.meituan.com',
+      // 'meituan.net',  
     ],
     'eleme': [
-      'ele.me',
-      'mmstat.com'
+      'waimai-guide.ele.me',
+      // 'mmstat.com'
     ],
   }
 
