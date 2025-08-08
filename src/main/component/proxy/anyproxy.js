@@ -101,7 +101,13 @@ async function startProxy() {
 // 停止代理
 async function stopProxy() {
   // 强制关闭的时候 也走代理一下 去清理一下服务
-  await osProxy.closeProxy()
+  try{
+    // 这里调用会出现vbscript异常问题
+    await osProxy.closeProxy()
+  }catch(e) {
+    console.log(e)
+  }
+  
   if (proxyServer) {
     proxyServer.close()
     proxyServer = null
