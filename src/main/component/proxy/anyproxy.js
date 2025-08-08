@@ -11,7 +11,7 @@ const { exec } = require('child_process')
 const proxyConfig = {
   port: 16888, // 代理端口
   enableHttps: true, // 启用 HTTPS 拦截
-  forceProxyHttps: true,
+  forceProxyHttps: false,
   rule: rule, // 代理规则文件路径
   dbPath: path.join(__dirname, '../proxyDB'), // 缓存路径
   webInterface: {
