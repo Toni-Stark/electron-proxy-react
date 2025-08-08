@@ -68,16 +68,14 @@ class App extends Component {
         <Layout>
           <Header value={Header} style={{height: 50, padding: 0}}>
             <div style={flexEnd}>
-              <BreadcrumbNav />
-              <Button
-                  style={btnStyle}
-                  type="default"
-                  block
-                  icon="poweroff"
-                  onClick={this.getOut}
-              >
-                退出登录
-              </Button>
+              {/*<Button*/}
+              {/*    type="default"*/}
+              {/*    block*/}
+              {/*    icon="poweroff"*/}
+              {/*    onClick={this.getOut}*/}
+              {/*>*/}
+              {/*  退出登录*/}
+              {/*</Button>*/}
             </div>
           </Header>
           <Content style={{
@@ -86,9 +84,9 @@ class App extends Component {
             background: '#fff',
             minHeight: 280
           }}>
+            <BreadcrumbNav />
             <Switch>
               <Route exact path="/" component={Dashboard} />
-              {/*<Route exact path="/" component={Dashboard} />*/}
               <Route path="/meituan/spuList/:shop_id/:spu_id" component={MeiTuanSpuList} />
               <Route path="/meituan" component={MeiTuanList} />
               <Route path="/eleme/spuList/:shop_id/:spu_id" component={ElemeSpuList} />
@@ -107,16 +105,10 @@ class App extends Component {
 export default App;
 
 const flexFull = { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }
-const btnStyle = {
-  width: '100px',
-  marginRight: '10px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center'
-}
+
 const flexEnd = {
   display: 'flex',
-  justifyContent: 'space-between',
+  justifyContent: 'flex-start',
   alignItems: 'center',
   height: '100%',
   paddingLeft: '15px'
