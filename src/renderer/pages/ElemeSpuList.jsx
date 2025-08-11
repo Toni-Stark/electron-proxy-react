@@ -23,8 +23,8 @@ const { Search } = Input;
 
 
 const columnsKeys = {
-    shop_name: '店铺名称',
-    shop_address: '店铺地址',
+    // shop_name: '店铺名称',
+    // shop_address: '店铺地址',
     // shop_picture: '店铺logo',
     product_name: '药品名称',
     // spu_picture: '药品图片',
