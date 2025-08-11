@@ -6,7 +6,6 @@ import Tag from 'antd/lib/tag'
 import Avatar from 'antd/lib/avatar'
 import message from 'antd/lib/message'
 import Select from 'antd/lib/select'
-import Card from 'antd/lib/card'
 
 import 'antd/lib/card/style/index.css';
 import 'antd/lib/select/style/index.css';
@@ -99,84 +98,6 @@ class Dashboard extends Component {
     this.setState({ showPreview: false});
   };
   render() {
-    // 表格列定义
-    const columns = [
-      {
-        title: 'id',
-        dataIndex: 'id',
-        key: 'id',
-      },
-      // {
-      //   title: '所属平台',
-      //   dataIndex: 'platform',
-      //   key: 'platform',
-      // },
-      {
-        title: '品牌id',
-        dataIndex: 'brand_id',
-        key: 'brand_id',
-      },
-      // {
-      //   title: '店铺三方id',
-      //   dataIndex: 'third_id',
-      //   key: 'third_id',
-      // },
-      {
-        title: '店铺名称',
-        dataIndex: 'name',
-        key: 'name',
-      },
-      {
-        title: '店铺图片',
-        dataIndex: 'logo',
-        key: 'logo',
-        render: (logo) => {
-          return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
-        },
-      },
-      {
-        title: '店铺地址',
-        dataIndex: 'address',
-        key: 'address',
-        width: "30%",
-      },
-      {
-        title: '更新时间',
-        dataIndex: 'updatedAt',
-        key: 'updatedAt',
-      },
-      {
-        title: '距离',
-        dataIndex: 'distance',
-        key: 'distance',
-      },
-      // {
-      //   title: '宣传语',
-      //   dataIndex: 'slogan',
-      //   key: 'slogan',
-      // },
-
-      {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-        render: (status) => {
-          let color = status === 1 ? 'green' : 'red';
-          return <Tag color={color}>{status === 1 ? '正常' : '异常'}</Tag>;
-        },
-      },
-      {
-        title: '操作',
-        key: 'action',
-        fixed: 'right',
-        width: 200,
-        render: (info, record) => (
-            <div size="middle" style={{display: 'flex'}}>
-              <Button type="link" onClick={()=>this.naviToSpuList(info)}>商品列表</Button>
-            </div>
-        ),
-      },
-    ];
     const {dataList,value, refresh, currentImage,showPreview} = this.state;
 
     return (

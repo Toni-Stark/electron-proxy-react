@@ -43,3 +43,20 @@
     color: rgba(255, 255, 255, 0.9);
     background: rgba(0, 21, 41, 0.84);
 }
+.proxy_status {
+    font-size: 13px;
+    padding: 10px 20px;
+    border-top: 1px solid rgba(132, 132, 132, 0.91);
+    border-bottom: 1px solid rgba(132, 132, 132, 0.91);
+}
+.proxy_status_title {
+    color: rgba(255, 255, 255, 0.65);
+    padding: 0 0 7px;
+    display: flex;
+    justify-content: space-between;
+}
+.proxy_control {
+    color: rgba(255, 255, 255, 0.65);
+    display: flex;
+    justify-content: space-between;
+}

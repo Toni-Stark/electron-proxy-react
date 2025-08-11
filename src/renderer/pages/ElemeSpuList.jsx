@@ -191,22 +191,31 @@ class ElemeSpuList extends Component {
         key: 'key',
         width: 55
       },
+      // {
+      //   title: '店铺名称',
+      //   dataIndex: 'shop_name',
+      //   key: 'shop_name',
+      //   width: 100
+      // },
+      // {
+      //   title: '店铺地址',
+      //   dataIndex: 'shop_address',
+      //     key: 'shop_address',
+      //     width: 200
+      // },
+      // {
+      //   title: '店铺logo',
+      //   dataIndex: 'shop_picture',
+      //   key: 'shop_picture',
+      //   render: (logo) => {
+      //     return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
+      //   },
+      //   width: 65
+      // },
       {
-        title: '店铺名称',
-        dataIndex: 'shop_name',
-        key: 'shop_name',
-        width: 100
-      },
-      {
-        title: '店铺地址',
-        dataIndex: 'shop_address',
-          key: 'shop_address',
-          width: 200
-      },
-      {
-        title: '店铺logo',
-        dataIndex: 'shop_picture',
-        key: 'shop_picture',
+        title: '药品图片',
+        dataIndex: 'spu_picture',
+        key: 'spu_picture',
         render: (logo) => {
           return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
         },
@@ -217,15 +226,6 @@ class ElemeSpuList extends Component {
         dataIndex: 'product_name',
         key: 'product_name',
         width: 200
-      },
-      {
-        title: '药品图片',
-        dataIndex: 'spu_picture',
-        key: 'spu_picture',
-        render: (logo) => {
-          return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
-        },
-        width: 65
       },
       {
         title: '规格标签',
@@ -293,7 +293,7 @@ class ElemeSpuList extends Component {
             <Search
                 style={{minWidth: 280,width: 280}}
                 placeholder="请输入药品名称"
-                enterButton
+                enterButton="确 定"  // 关键修改
                 onSearch={this.handleSearch}
             />
             <Button

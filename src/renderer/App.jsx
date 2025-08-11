@@ -46,7 +46,16 @@ class App extends Component {
   };
   getOut = () => {
     removeToken()
-    this.setState({ isAuthenticated: !!getToken() })
+    this.setState({
+      isAuthenticated: !!getToken(),
+      links:[
+        {
+          title: '控制台',
+          key: '/',
+          hash: ''
+        }
+      ]
+    })
   }
   updateLinks = ({type, key, hash, name}) => {
     let list = [...this.state.links];
@@ -132,7 +141,6 @@ class App extends Component {
             background: '#fff',
             minHeight: 280
           }}>
-            {/*<BreadcrumbNav />*/}
             <Switch>
               <Route exact path="/"
                      component={(props) => (

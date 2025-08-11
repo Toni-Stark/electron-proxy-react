@@ -3,23 +3,32 @@ import { Link } from 'react-router-dom';
 import Menu from 'antd/lib/menu'
 import Icon from 'antd/lib/icon'
 import Layout from 'antd/lib/layout'
+import notification from "antd/lib/notification";
+import Switch from "antd/lib/switch";
 
 import 'antd/lib/menu/style/index.css';
 import 'antd/lib/button/style/index.css';
 import 'antd/lib/icon/style/index.css';
 import 'antd/lib/layout/style/index.css';
+import 'antd/lib/switch/style/index.css';
+import 'antd/lib/notification/style/index.css';
 
 import './index.css'
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
+const openMessage = (type, text) => {
+    notification[type]({
+        message: text,
+    });
+};
+
 class Sidebar extends Component {
     constructor(props) {
         super(props);
         this.state = {
             collapsed: false,
-            // 当前选中的菜单键
             selectedKey: ['/'],
             route: [
                 {
@@ -53,11 +62,17 @@ class Sidebar extends Component {
                     icon: 'setting',
                     hash: ''
                 }
-            ]
+            ],
+            openProxy:false,
+            running: false,
+            port: 0,
         };
+        this.updateStatus = this.updateStatus.bind(this); // 手动绑定
     }
-
-
+    async componentDidMount() {
+        console.log('页面注册')
+        await this.updateStatus()
+    }
     toggleCollapsed = () => {
         this.setState({
             collapsed: !this.state.collapsed,
@@ -73,8 +88,40 @@ class Sidebar extends Component {
         console.log(item, 'item')
         this.props.addLinks({...item, type: 'add'})
     }
+
+    updateStatus = async () => {
+        const current = await window.drugApi.getStatus()
+        console.log('当前状态:', current)
+        this.setState({
+            running: current.running,
+            port: current.port,
+            openProxy: current.running,
+        })
+    }
+    handleImmediateChange = async (key, value) => {
+        await this.setState({ [key]: value }, async () => {
+            console.log(`${key} 更新为:`, value);
+            if(key === 'openProxy'){
+                if(value){
+                    const success = await window.drugApi.start()
+                    if (success) {
+                        openMessage('success', '代理启动成功')
+                    } else {
+                        openMessage('error', '代理启动失败，请查看控制台日志')
+                    }
+                    await this.updateStatus()
+                } else {
+                    const success = await window.drugApi.stop()
+                    if (success) {
+                        openMessage('info', '代理已停止')
+                        await this.updateStatus()
+                    }
+                }
+            }
+        });
+    };
     render() {
-        const { route } = this.state;
+        const { route,openProxy,port, running} = this.state;
         return (
             <Sider
                 trigger={null}
@@ -132,6 +179,18 @@ class Sidebar extends Component {
                     </Menu>
                 </div>
                 <div className="footer_sid">
+                    <div className="proxy_status">
+                        <div className="proxy_status_title">端口<span>{port}</span></div>
+                        <div className="proxy_status_title">状态<span style={{color: running ? '#52c41a' : 'rgba(255,255,255,0.65)'}}>{ running ? '运行中' : '已停止' }</span></div>
+                        <div className="proxy_control">
+                            打开代理
+                            <Switch
+                                checked={openProxy}
+                                onChange={(checked) => this.handleImmediateChange('openProxy', checked)}
+                            />
+                        </div>
+                    </div>
+
                     <div
                         className="out_login"
                         onClick={this.props.getOut}
