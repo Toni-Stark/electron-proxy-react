@@ -56,12 +56,12 @@ class Sidebar extends Component {
                 //         }
                 //     ]
                 // },
-                {
-                    key: '/settings',
-                    name: '系统设置',
-                    icon: 'setting',
-                    hash: ''
-                }
+                // {
+                //     key: '/settings',
+                //     name: '系统设置',
+                //     icon: 'setting',
+                //     hash: ''
+                // }
             ],
             openProxy:false,
             running: false,
