@@ -89,7 +89,7 @@ class Setting extends Component {
                 <span className="ant-form-text" style={{color: running ? '#52c41a' : 'rgba(0, 0, 0, 0.65)'}}>{ running ? '运行中' : '已停止' }</span>
               </FormItem>
             </div>
-            <FormItem label="打开代理" style={{...flex, marginBottom: 0}}>
+            <FormItem label="开启扫描" style={{...flex, marginBottom: 0}}>
               <Switch
                   checked={openProxy}
                   onChange={(checked) => this.handleImmediateChange('openProxy', checked)}

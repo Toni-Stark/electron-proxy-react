@@ -149,8 +149,8 @@ class ElemeSpuList extends Component {
     })
   }
   refreshFun = async() => {
-    this.setState({ refresh: true, kw: '' });
-    await this.getDataList({ page: 1})
+    this.setState({ refresh: true });
+    await this.getDataList({ page: 1, kw: this.state.kw})
     message.success('刷新成功');
     this.setState({ refresh: false });
   }
@@ -185,12 +185,12 @@ class ElemeSpuList extends Component {
   render() {
     // 表格列定义
     const columns = [
-      {
-        title: '序号',
-        dataIndex: 'key',
-        key: 'key',
-        width: 28
-      },
+      // {
+      //   title: '序号',
+      //   dataIndex: 'key',
+      //   key: 'key',
+      //   width: 28
+      // },
       // {
       //   title: '店铺名称',
       //   dataIndex: 'shop_name',
@@ -219,7 +219,9 @@ class ElemeSpuList extends Component {
         render: (logo) => {
           return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
         },
-        width: 55
+        width: 55,
+        minWidth: 55,
+        maxWidth: 55
       },
       {
         title: '药品名称',
@@ -287,7 +289,7 @@ class ElemeSpuList extends Component {
     const {dataList, refresh,page, total, loading,currentImage,showPreview} = this.state;
 
     return (
-      <div>
+      <div style={divStyle}>
         <div style={{...flexView,justifyContent: 'space-between'}}>
           <div style={flexView}>
             <Search
@@ -321,7 +323,6 @@ class ElemeSpuList extends Component {
             columns={columns}
             size="middle"
             locale={{ emptyText: '暂无数据' }}
-            scroll={dataList.length> 0 ? { x: 1300, y: 'calc(100vh - 300px)' }: {}}
             pagination={{
               position: 'bottom',
               pageSize: 30,
@@ -330,6 +331,10 @@ class ElemeSpuList extends Component {
               showTotal: total => `共 ${total} 条`,
               onChange: this.changeTable,  // 页码改变回调
             }}
+            scroll={dataList.length> 0 ?{
+              y: 'calc(100vh - 240px)', // 动态计算高度（视窗高度 - 其他元素高度）
+              x: '100%' // 保持横向滚动
+            }:{}}
             dataSource={dataList}
         />
         <ImagePreviewModal
@@ -344,8 +349,6 @@ class ElemeSpuList extends Component {
 
 export default ElemeSpuList;
 
-const flexView = {
-  display: 'flex',
-  alignItems: 'center',
-  padding: 0
-}
+const flexView = {display: 'flex', alignItems: 'center', padding: 0}
+const divStyle = {paddingRight: '10px'}
+

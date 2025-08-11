@@ -10,7 +10,11 @@ import Divider from "antd/lib/divider";
 import Row from "antd/lib/row";
 import Col from "antd/lib/col";
 import Modal from "antd/lib/modal";
+import Empty from "antd/lib/empty";
+import Pagination from "antd/lib/pagination";
 
+import 'antd/lib/empty/style/index.css';
+import 'antd/lib/pagination/style/index.css';
 import 'antd/lib/modal/style/index.css';
 import 'antd/lib/divider/style/index.css';
 import 'antd/lib/card/style/index.css';
@@ -28,7 +32,7 @@ import '../styles/Dashboard.css'
 
 const { Search } = Input;
 const { Option } = Select;
-
+const { confirm } = Modal;
 
 const TagElement = (platform, id) => {
   if(platform === 'meituan'){
@@ -78,8 +82,9 @@ class Dashboard extends Component {
     this.getDataList = this.getDataList.bind(this); // 手动绑定
     this.refreshFun = this.refreshFun.bind(this); // 手动绑定
     this.handleChange = this.handleChange.bind(this); // 手动绑定
-    this.deleteStore = this.deleteStore.bind(this); // 手动绑定
     this.showDetailStore = this.showDetailStore.bind(this); // 手动绑定
+    this.showConfirm = this.showConfirm.bind(this); // 手动绑定
+    this.changeTable = this.changeTable.bind(this); // 手动绑定
   }
   async getDataList({page,platform = "", kw = ''}){
     const res = await window.drugApi.storeList(kw,platform, page)
@@ -88,15 +93,15 @@ class Dashboard extends Component {
       return {...item, key: index+'' ,updatedAt: getTimes(item.updatedAt, 2) }
     })
     this.setState({
-      dataList: list,
+      dataList: [...list],
       total: res.data.total,
       page: page,
       kw: kw
     })
   }
   refreshFun = async() => {
-    this.setState({ refresh: true, kw: '' });
-    await this.getDataList({ page: 1, platform: this.state.value})
+    this.setState({ refresh: true });
+    await this.getDataList({ page: 1, platform: this.state.value, kw: this.state.kw})
     message.success('刷新成功');
     this.setState({ refresh: false });
   }
@@ -136,14 +141,6 @@ class Dashboard extends Component {
   closePreview = () => {
     this.setState({ showPreview: false});
   };
-  deleteStore = (e, id) => {
-    e.preventDefault();  // 阻止默认行为
-    e.stopPropagation(); // 阻止冒泡
-    console.log(id, 'id')
-    let list = this.state.dataList;
-    list = list.filter(item=>item.id !== id);
-    this.setState({ dataList: [...list] })
-  }
 
   showDetailStore = async (e, id) => {
     e.preventDefault();  // 阻止默认行为
@@ -160,16 +157,33 @@ class Dashboard extends Component {
       drawInfo: data
     })
   }
+  showConfirm = async (e, item) => {
+    let that = this;
+    e.preventDefault();  // 阻止默认行为
+    e.stopPropagation(); // 阻止冒泡
+    await confirm({
+      title: `删除店铺`,
+      content: `确认删除${item.name}？`,
+      okText: '确认',
+      cancelText: '取消',
+      async onOk() {
+        const res = await window.drugApi.storeDel(item.id);
+        if(res.code === 200){
+          await that.getDataList({ page:that.state.page, platform: that.state.value, kw: that.state.kw})
+          message.success('删除成功')
+        } else {
+          message.error(res.message);
+        }
+      },
+      onCancel() {},
+    });
+  }
   render() {
-    const {dataList,value, refresh,visible,drawInfo, currentImage,showPreview} = this.state;
+    const {dataList,value, refresh,visible,drawInfo, currentImage,showPreview,page, total} = this.state;
 
     return (
-        <div>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: 0
-          }}>
+        <div style={divStyle}>
+          <div style={{display: 'flex', alignItems: 'center', padding: 0}}>
             <Select defaultValue={value} style={{ width: 120 }} onChange={this.handleChange}>
               <Option value="">全部</Option>
               <Option value="meituan">美团</Option>
@@ -194,7 +208,7 @@ class Dashboard extends Component {
           <div className="content">
             {
               dataList.map((item, index)=>(
-                  <div className="card" key={item.id + item.brand_id} onClick={()=>this.naviToSpuList(item)}>
+                  <div className="card" key={item.id + item.brand_id + index} onClick={()=>this.naviToSpuList(item)}>
                     <div className="title">
                       <div className="main">
                         <div className="avatar_view">
@@ -205,25 +219,37 @@ class Dashboard extends Component {
                         </div>
                       </div>
                     </div>
-
-                    <div style={{marginTop: 6, padding: 9}}>
-                      {TagElement(item.platform,item.brand_id)}
-                      <Tag color={item.status === 1 ? 'green' : 'red'}>状态: {item.status === 1 ? '正常' : '异常'}</Tag>
+                    <div className="content_view">
+                      <div className="content_tag">
+                        {TagElement(item.platform,item.brand_id)}
+                        <Tag color={item.status === 1 ? 'green' : 'red'}>状态: {item.status === 1 ? '正常' : '异常'}</Tag>
+                      </div>
+                      <div className="middle_label">店铺地址：<span>{item.address}</span></div>
+                      <div className="flex_label">
+                        <div className="middle_label">更新时间：<span>{item.updatedAt}</span></div>
+                        {item?.distance?<div className="middle_label">距离：<span>{item.distance}</span></div>:null}
+                      </div>
+                      <div className="posi_right"><div className="text">{item.id}</div></div>
                     </div>
-                    <div className="middle_label">店铺地址：<span>{item.address}</span></div>
-                    <div className="flex_label">
-                      <div className="middle_label">更新时间：<span>{item.updatedAt}</span></div>
-                      {item?.distance?<div className="middle_label">距离：<span>{item.distance}</span></div>:null}
-                    </div>
-                    <div className="posi_right"><div className="text">{item.id}</div></div>
                     <div className="footer_view">
                       <Button className="button link" type="link" onClick={(e)=>this.showDetailStore(e,item.id)}>详情</Button>
-                      <Button className="button danger" type="danger" onClick={(e)=>this.deleteStore(e,item.id)}>删除</Button>
+                      <Button className="button danger" type="danger" onClick={(e)=>this.showConfirm(e,item)}>删除</Button>
                     </div>
                   </div>
               ))
             }
           </div>
+          {total>0 ?
+              <div style={pageStyle}>
+                <Pagination
+                    defaultCurrent={page}
+                    total={total}
+                    size="small"
+                    pageSize={30}
+                    showTotal={total => `共 ${total} 条`}
+                    onChange={this.changeTable} />
+              </div>
+              : <div style={empty}><Empty description="暂无数据"/></div>}
           <Modal
               width="60%"
               closable={false}
@@ -279,13 +305,8 @@ class Dashboard extends Component {
 
 export default Dashboard;
 
-const evalStyle = {
-  fontSize: 25,
-  display: 'block',
-  margin: 0,
-  lineHeight: '50px'
-};
-const titleStyle = {
-  display: 'flex',
-  alignItems: 'center',
-};
+const evalStyle = {fontSize: 25, display: 'block', margin: 0, lineHeight: '50px'};
+const titleStyle = {display: 'flex', alignItems: 'center'};
+const pageStyle = {display: 'flex', padding: '20px 0', justifyContent: 'center', width: '100%'}
+const empty = {height:350,display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}
+const divStyle = {height: '100%', overflowY: 'auto', paddingRight: '10px'}

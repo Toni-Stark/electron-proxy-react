@@ -30,10 +30,20 @@
     height: 36px;
     line-height: 36px;
 }
+.ant-layout {
+    height: 100vh;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+}
 .ant-layout-header{
     height: 36px !important;
     line-height: 36px !important;
     padding: 0 !important
+}
+.ant-layout-content {
+    flex: 1;
+    overflow: hidden;
 }
 .header_class {
     display: flex;

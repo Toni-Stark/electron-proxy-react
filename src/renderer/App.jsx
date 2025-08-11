@@ -135,12 +135,7 @@ class App extends Component {
               <EditableTagGroup active={active} links={links} updateLinks={this.updateLinks} />
             </div>
           </Header>
-          <Content style={{
-            margin: '16px',
-            padding: '16px',
-            background: '#fff',
-            minHeight: 280
-          }}>
+          <Content style={contentStyle}>
             <Switch>
               <Route exact path="/"
                      component={(props) => (
@@ -170,3 +165,9 @@ class App extends Component {
 export default withRouter(App);
 
 const flexFull = { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }
+const contentStyle = {
+  margin: '16px',
+  padding: '16px 0 16px 16px',
+  background: '#fff',
+  minHeight: 280
+}
