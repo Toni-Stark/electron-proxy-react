@@ -181,7 +181,7 @@ class Sidebar extends Component {
                         <div className="proxy_status_title">端口<span>{port}</span></div>
                         <div className="proxy_status_title">状态<span style={{color: running ? '#52c41a' : 'rgba(255,255,255,0.65)'}}>{ running ? '运行中' : '已停止' }</span></div>
                         <div className="proxy_control">
-                            打开代理
+                            开启扫描
                             <Switch
                                 checked={openProxy}
                                 onChange={(checked) => this.handleImmediateChange('openProxy', checked)}
