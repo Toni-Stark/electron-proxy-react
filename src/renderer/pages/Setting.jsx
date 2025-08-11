@@ -31,7 +31,6 @@ class Setting extends Component {
   }
   updateStatus = async () => {
     const current = await window.drugApi.getStatus()
-    console.log('当前状态:', current)
     this.setState({
       running: current.running,
       port: current.port,
@@ -51,7 +50,6 @@ class Setting extends Component {
   };
   handleImmediateChange = async (key, value) => {
     await this.setState({ [key]: value }, async () => {
-      console.log(`${key} 已更新为:`, value);
       if(key === 'openProxy'){
         if(value){
           const success = await window.drugApi.start()
@@ -72,7 +70,6 @@ class Setting extends Component {
     });
   };
   async componentDidMount() {
-    console.log('页面注册')
     await this.updateStatus()
   }
   render() {

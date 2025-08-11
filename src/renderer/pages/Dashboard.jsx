@@ -88,7 +88,6 @@ class Dashboard extends Component {
   }
   async getDataList({page,platform = "", kw = ''}){
     const res = await window.drugApi.storeList(kw,platform, page)
-    console.log('当前数据列表:', res);
     let list = res.data.store_list.map((item, index)=>{
       return {...item, key: index+'' ,updatedAt: getTimes(item.updatedAt, 2) }
     })
@@ -145,7 +144,6 @@ class Dashboard extends Component {
   showDetailStore = async (e, id) => {
     e.preventDefault();  // 阻止默认行为
     e.stopPropagation(); // 阻止冒泡
-    console.log(id);
     const res = await window.drugApi.storeInfo(id);
     const data = {
       ...res.data,

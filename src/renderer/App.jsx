@@ -112,7 +112,9 @@ class App extends Component {
 
     if (!isAuthenticated) {
       return (
-          <Switch>
+          <Switch
+            className="switch_style"
+          >
             <Route
                 path="/login"
                 render={(props) => (
