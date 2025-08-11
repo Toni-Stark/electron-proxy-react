@@ -67,7 +67,6 @@ class ElemeList extends Component {
   }
   async getDataList({page, kw = ''}){
     const res = await window.drugApi.storeList(kw,'eleme', page)
-    console.log('当前数据列表:', res);
     let list = res.data.store_list.map((item, index)=>{
       return {...item, key: index+'' ,updatedAt: getTimes(item.updatedAt, 2)}
     })
@@ -85,9 +84,7 @@ class ElemeList extends Component {
     this.setState({ refresh: false });
   }
   showDetail = async (info) => {
-    console.log(info);
     const res = await window.drugApi.storeInfo(info.id);
-    console.log(res,'res')
     const data = {
       ...res.data,
       createdAt: getTimes(res.data.createdAt),

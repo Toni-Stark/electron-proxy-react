@@ -104,7 +104,6 @@ class ElemeSpuList extends Component {
       spu_id: '',
       shop_id: '',
     };
-    console.log(this.props)
     this.getDataList = this.getDataList.bind(this); // 手动绑定
     this.uploadAllData = this.uploadAllData.bind(this); // 手动绑定
     this.refreshFun = this.refreshFun.bind(this); // 手动绑定
@@ -118,7 +117,6 @@ class ElemeSpuList extends Component {
     let list = res.data.sku_list.map((item, index)=>{
       return {...item, key: index+1+''}
     })
-    console.log('当前数据列表:', list, {spu, shop, page, kw, is_export})
     this.setState({
       dataList: list,
       total: res.data.total,
@@ -137,7 +135,6 @@ class ElemeSpuList extends Component {
       loading: true
     })
     const res = await window.drugApi.getSkuList(shop, spu, '', 1, 1)
-    console.log(res, 'res')
     let list = res.data?.sku_list;
     if(list?.length<=0){
       message.warning('没有可导出的数据')
@@ -163,7 +160,6 @@ class ElemeSpuList extends Component {
 
   async componentDidMount() {
     const { shop_id, spu_id } = this.props.match.params;
-    console.log(shop_id, spu_id, 'id')
     await this.getDataList({shop_id, page: 1})
   }
 
