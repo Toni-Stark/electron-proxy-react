@@ -1,6 +1,6 @@
 const { ipcMain } = require('electron')
 const { startProxy, stopProxy, isProxyRunning, getPort } = require('./component/proxy/anyproxy')
-const { getStoreInfo, getStoreList } = require('./services/store')
+const { getStoreInfo, getStoreList, delStore } = require('./services/store')
 const { getSpuList, getSkuList } = require('./services/product')
 const { login } = require('./services/user')
 
@@ -27,6 +27,10 @@ export default function() {
 
   ipcMain.handle('store:info', async (e, id) => {
     return await getStoreInfo(id)
+  })
+
+  ipcMain.handle('store:del', async(e, id) => {
+    return await delStore(id)
   })
 
   ipcMain.handle('product:getSpuList', async(e, shop_id, kw = '', page = 1) => {
