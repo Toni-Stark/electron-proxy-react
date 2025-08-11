@@ -189,7 +189,7 @@ class ElemeSpuList extends Component {
         title: '序号',
         dataIndex: 'key',
         key: 'key',
-        width: 55
+        width: 28
       },
       // {
       //   title: '店铺名称',
@@ -219,7 +219,7 @@ class ElemeSpuList extends Component {
         render: (logo) => {
           return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
         },
-        width: 65
+        width: 55
       },
       {
         title: '药品名称',
@@ -237,7 +237,7 @@ class ElemeSpuList extends Component {
         title: '规格名称',
         dataIndex: 'sku_name',
         key: 'sku_name',
-        width: 150
+        width: 90
       },
       {
         title: '价格',

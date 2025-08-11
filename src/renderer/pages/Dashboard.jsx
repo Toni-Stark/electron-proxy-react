@@ -6,7 +6,13 @@ import Tag from 'antd/lib/tag'
 import Avatar from 'antd/lib/avatar'
 import message from 'antd/lib/message'
 import Select from 'antd/lib/select'
+import Divider from "antd/lib/divider";
+import Row from "antd/lib/row";
+import Col from "antd/lib/col";
+import Modal from "antd/lib/modal";
 
+import 'antd/lib/modal/style/index.css';
+import 'antd/lib/divider/style/index.css';
 import 'antd/lib/card/style/index.css';
 import 'antd/lib/select/style/index.css';
 import 'antd/lib/button/style/index.css';
@@ -23,6 +29,37 @@ import '../styles/Dashboard.css'
 const { Search } = Input;
 const { Option } = Select;
 
+
+const TagElement = (platform, id) => {
+  if(platform === 'meituan'){
+    return (<Tag color="#ffbc26">品牌ID: {id}</Tag>)
+  } else if(platform === 'eleme'){
+    return (<Tag color="#028bf1">品牌ID: {id}</Tag>)
+  }
+}
+
+const DescriptionItem = ({ title, content }) => (
+    <div
+        style={{
+          fontSize: 14,
+          lineHeight: '22px',
+          marginBottom: 7,
+          color: 'rgba(0,0,0,0.65)',
+        }}
+    >
+      <p
+          style={{
+            marginRight: 8,
+            marginBottom: 0,
+            display: 'inline-block',
+            color: 'rgba(0,0,0,0.85)',
+          }}
+      >
+        {title}:
+      </p>
+      {content}
+    </div>
+);
 class Dashboard extends Component {
   constructor(props) {
     super(props);
@@ -36,11 +73,13 @@ class Dashboard extends Component {
       drawInfo: {},
       showPreview: false,
       currentImage: '',
-      value: ''
+      value: '',
     }
     this.getDataList = this.getDataList.bind(this); // 手动绑定
     this.refreshFun = this.refreshFun.bind(this); // 手动绑定
     this.handleChange = this.handleChange.bind(this); // 手动绑定
+    this.deleteStore = this.deleteStore.bind(this); // 手动绑定
+    this.showDetailStore = this.showDetailStore.bind(this); // 手动绑定
   }
   async getDataList({page,platform = "", kw = ''}){
     const res = await window.drugApi.storeList(kw,platform, page)
@@ -97,8 +136,32 @@ class Dashboard extends Component {
   closePreview = () => {
     this.setState({ showPreview: false});
   };
+  deleteStore = (e, id) => {
+    e.preventDefault();  // 阻止默认行为
+    e.stopPropagation(); // 阻止冒泡
+    console.log(id, 'id')
+    let list = this.state.dataList;
+    list = list.filter(item=>item.id !== id);
+    this.setState({ dataList: [...list] })
+  }
+
+  showDetailStore = async (e, id) => {
+    e.preventDefault();  // 阻止默认行为
+    e.stopPropagation(); // 阻止冒泡
+    console.log(id);
+    const res = await window.drugApi.storeInfo(id);
+    const data = {
+      ...res.data,
+      createdAt: getTimes(res.data.createdAt),
+      updatedAt: getTimes(res.data.updatedAt),
+    }
+    this.setState({
+      visible: true,
+      drawInfo: data
+    })
+  }
   render() {
-    const {dataList,value, refresh, currentImage,showPreview} = this.state;
+    const {dataList,value, refresh,visible,drawInfo, currentImage,showPreview} = this.state;
 
     return (
         <div>
@@ -131,7 +194,7 @@ class Dashboard extends Component {
           <div className="content">
             {
               dataList.map((item, index)=>(
-                  <div className="card" key={ index} onClick={()=>this.naviToSpuList(item)}>
+                  <div className="card" key={item.id + item.brand_id} onClick={()=>this.naviToSpuList(item)}>
                     <div className="title">
                       <div className="main">
                         <div className="avatar_view">
@@ -143,12 +206,8 @@ class Dashboard extends Component {
                       </div>
                     </div>
 
-                    <div style={{marginTop: 6}}>
-                      {
-                        item.platform === 'meituan' ?
-                            (<Tag color="#ffbc26">品牌ID: {item.brand_id}</Tag>) :
-                            (<Tag color="#028bf1">品牌ID: {item.brand_id}</Tag>)
-                      }
+                    <div style={{marginTop: 6, padding: 9}}>
+                      {TagElement(item.platform,item.brand_id)}
                       <Tag color={item.status === 1 ? 'green' : 'red'}>状态: {item.status === 1 ? '正常' : '异常'}</Tag>
                     </div>
                     <div className="middle_label">店铺地址：<span>{item.address}</span></div>
@@ -157,10 +216,57 @@ class Dashboard extends Component {
                       {item?.distance?<div className="middle_label">距离：<span>{item.distance}</span></div>:null}
                     </div>
                     <div className="posi_right"><div className="text">{item.id}</div></div>
+                    <div className="footer_view">
+                      <Button className="button link" type="link" onClick={(e)=>this.showDetailStore(e,item.id)}>详情</Button>
+                      <Button className="button danger" type="danger" onClick={(e)=>this.deleteStore(e,item.id)}>删除</Button>
+                    </div>
                   </div>
               ))
             }
           </div>
+          <Modal
+              width="60%"
+              closable={false}
+              onClose={this.onClose}
+              visible={visible}
+              footer={[
+                <Button key="cancel" onClick={this.onClose}>
+                  关闭
+                </Button>
+              ]}
+          >
+            <div style={titleStyle}>
+              <Avatar src={drawInfo.logo} size={50} style={{marginRight: 10}}/>
+              <p style={evalStyle}>{drawInfo.name}</p>
+            </div>
+            <Divider />
+            <Row>
+              <Col span={24}>
+                <DescriptionItem title="店铺地址" content={drawInfo.address} />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <DescriptionItem title="品牌id" content={drawInfo.brand_id} />
+              </Col>
+              <Col span={12}>
+                <DescriptionItem title="距离" content={drawInfo.distance} />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <DescriptionItem title="创建时间" content={drawInfo.createdAt} />
+              </Col>
+              <Col span={12}>
+                <DescriptionItem title="更新时间" content={drawInfo.updatedAt} />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <DescriptionItem title="宣传语" content={drawInfo.slogan}/>
+              </Col>
+            </Row>
+          </Modal>
           <ImagePreviewModal
               visible={showPreview}
               imageUrl={currentImage}
@@ -172,3 +278,14 @@ class Dashboard extends Component {
 }
 
 export default Dashboard;
+
+const evalStyle = {
+  fontSize: 25,
+  display: 'block',
+  margin: 0,
+  lineHeight: '50px'
+};
+const titleStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};

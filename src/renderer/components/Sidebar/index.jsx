@@ -177,8 +177,6 @@ class Sidebar extends Component {
                             })
                         }
                     </Menu>
-                </div>
-                <div className="footer_sid">
                     <div className="proxy_status">
                         <div className="proxy_status_title">端口<span>{port}</span></div>
                         <div className="proxy_status_title">状态<span style={{color: running ? '#52c41a' : 'rgba(255,255,255,0.65)'}}>{ running ? '运行中' : '已停止' }</span></div>
@@ -190,6 +188,9 @@ class Sidebar extends Component {
                             />
                         </div>
                     </div>
+                </div>
+                <div className="footer_sid">
+
 
                     <div
                         className="out_login"
