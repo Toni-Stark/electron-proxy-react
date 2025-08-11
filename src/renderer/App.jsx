@@ -8,11 +8,8 @@ import Setting from './pages/Setting';
 import NotFound from './pages/NotFound';
 import {getToken, removeToken} from './utils/auth'
 import Login from "./pages/Login";
-import MeiTuanList from "./pages/MeiTuanList";
 import MeiTuanSpuList from "./pages/MeiTuanSpuList";
-// import BreadcrumbNav from "./components/BreadcrumbNav";
 import ElemeSpuList from "./pages/ElemeSpuList";
-import ElemeList from "./pages/ElemeList";
 
 import 'antd/lib/button/style/index.css';
 import 'antd/lib/layout/style/index.css';
@@ -147,12 +144,10 @@ class App extends Component {
                      component={(props) => (
                          <MeiTuanSpuList {...props} key={`${props.match.params.shop_id}-${props.match.params.spu_id}`}/>
                      )}/>
-              <Route path="/meituan" component={MeiTuanList} />
               <Route path="/eleme/spuList/:shop_id/:spu_id"
                      component={(props) => (
                          <ElemeSpuList {...props} key={`${props.match.params.shop_id}-${props.match.params.spu_id}`}/>
                      )}/>
-              <Route path="/eleme" component={ElemeList} />
               <Route path="/settings" component={Setting} />
               <Redirect from="/login" to="/" />
               <Route component={NotFound} />
