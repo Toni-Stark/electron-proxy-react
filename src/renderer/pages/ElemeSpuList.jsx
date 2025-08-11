@@ -149,8 +149,8 @@ class ElemeSpuList extends Component {
     })
   }
   refreshFun = async() => {
-    this.setState({ refresh: true, kw: '' });
-    await this.getDataList({ page: 1})
+    this.setState({ refresh: true });
+    await this.getDataList({ page: 1, kw: this.state.kw})
     message.success('刷新成功');
     this.setState({ refresh: false });
   }
@@ -185,39 +185,33 @@ class ElemeSpuList extends Component {
   render() {
     // 表格列定义
     const columns = [
-      {
-        title: '序号',
-        dataIndex: 'key',
-        key: 'key',
-        width: 55
-      },
-      {
-        title: '店铺名称',
-        dataIndex: 'shop_name',
-        key: 'shop_name',
-        width: 100
-      },
-      {
-        title: '店铺地址',
-        dataIndex: 'shop_address',
-          key: 'shop_address',
-          width: 200
-      },
-      {
-        title: '店铺logo',
-        dataIndex: 'shop_picture',
-        key: 'shop_picture',
-        render: (logo) => {
-          return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
-        },
-        width: 65
-      },
-      {
-        title: '药品名称',
-        dataIndex: 'product_name',
-        key: 'product_name',
-        width: 200
-      },
+      // {
+      //   title: '序号',
+      //   dataIndex: 'key',
+      //   key: 'key',
+      //   width: 28
+      // },
+      // {
+      //   title: '店铺名称',
+      //   dataIndex: 'shop_name',
+      //   key: 'shop_name',
+      //   width: 100
+      // },
+      // {
+      //   title: '店铺地址',
+      //   dataIndex: 'shop_address',
+      //     key: 'shop_address',
+      //     width: 200
+      // },
+      // {
+      //   title: '店铺logo',
+      //   dataIndex: 'shop_picture',
+      //   key: 'shop_picture',
+      //   render: (logo) => {
+      //     return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
+      //   },
+      //   width: 65
+      // },
       {
         title: '药品图片',
         dataIndex: 'spu_picture',
@@ -225,7 +219,15 @@ class ElemeSpuList extends Component {
         render: (logo) => {
           return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
         },
-        width: 65
+        width: 55,
+        minWidth: 55,
+        maxWidth: 55
+      },
+      {
+        title: '药品名称',
+        dataIndex: 'product_name',
+        key: 'product_name',
+        width: 200
       },
       {
         title: '规格标签',
@@ -237,7 +239,7 @@ class ElemeSpuList extends Component {
         title: '规格名称',
         dataIndex: 'sku_name',
         key: 'sku_name',
-        width: 150
+        width: 90
       },
       {
         title: '价格',
@@ -287,13 +289,13 @@ class ElemeSpuList extends Component {
     const {dataList, refresh,page, total, loading,currentImage,showPreview} = this.state;
 
     return (
-      <div>
+      <div style={divStyle}>
         <div style={{...flexView,justifyContent: 'space-between'}}>
           <div style={flexView}>
             <Search
                 style={{minWidth: 280,width: 280}}
                 placeholder="请输入药品名称"
-                enterButton
+                enterButton="确 定"  // 关键修改
                 onSearch={this.handleSearch}
             />
             <Button
@@ -321,7 +323,6 @@ class ElemeSpuList extends Component {
             columns={columns}
             size="middle"
             locale={{ emptyText: '暂无数据' }}
-            scroll={dataList.length> 0 ? { x: 1300, y: 'calc(100vh - 300px)' }: {}}
             pagination={{
               position: 'bottom',
               pageSize: 30,
@@ -330,6 +331,10 @@ class ElemeSpuList extends Component {
               showTotal: total => `共 ${total} 条`,
               onChange: this.changeTable,  // 页码改变回调
             }}
+            scroll={dataList.length> 0 ?{
+              y: 'calc(100vh - 240px)', // 动态计算高度（视窗高度 - 其他元素高度）
+              x: '100%' // 保持横向滚动
+            }:{}}
             dataSource={dataList}
         />
         <ImagePreviewModal
@@ -344,8 +349,6 @@ class ElemeSpuList extends Component {
 
 export default ElemeSpuList;
 
-const flexView = {
-  display: 'flex',
-  alignItems: 'center',
-  padding: 0
-}
+const flexView = {display: 'flex', alignItems: 'center', padding: 0}
+const divStyle = {paddingRight: '10px'}
+

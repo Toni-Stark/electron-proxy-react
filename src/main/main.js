@@ -12,14 +12,15 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 700,
+    resizable: false,      // 禁止调整大小
+    maximizable: false,    // 禁用最大化
+    fullscreenable: false, // 禁用全屏
     icon: path.join(__dirname, '../renderer/logo_256.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js') // 预加载脚本路径
     }
   })
-
   Menu.setApplicationMenu(null)
-
   // 加载应用
   // 在开发环境下加载 Vite 开发服务器
   // 在生产环境下加载打包后的 index.html

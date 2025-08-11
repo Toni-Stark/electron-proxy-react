@@ -217,7 +217,7 @@ class MeiTuanList extends Component {
           <Search
               style={{minWidth: 280,width: 280}}
               placeholder="搜索店铺名称和地址"
-              enterButton
+              enterButton="确 定"  // 关键修改
               onSearch={this.handleSearch}
           />
           <Button
