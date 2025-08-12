@@ -6,13 +6,13 @@ function renderJSON($code = 0, $data = [], $msg = '') {
     'code' => $code,
     'data' => $data,
     'msg' => $msg
-  ]));
+  ], JSON_UNESCAPED_UNICODE));
 }
 
-$token = $_REQUEST['token'] ?? '';
-$machine_code = $_REQUEST['machine_code'] ?? '';
+$token = $_POST['token'] ?? '';
+$mechine_code = $_POST['mechine_code'] ?? '';
 
-if(!$token || !$machine_code) {
+if(!$token || !$mechine_code) {
   renderJSON(-1, [], '缺少关键信息');
 }
 
@@ -26,11 +26,11 @@ if(!isset($token_data[$token])) {
 
 $token_info = $token_data[$token];
 
-if(strtotime($token_info['expird_time']) <= time()) {
+if(strtotime($token_info['expired_time']) <= time()) {
   renderJSON(-1, [], '已过授权有效期');
 }
 
-$token_data[$token]['mechine_code'] = $machine_code;
+$token_data[$token]['mechine_code'] = $mechine_code;
 file_put_contents($token_file, json_encode($token_data));
 
-renderJSON(200, $token_data[$token]);
+renderJSON(0, $token_data[$token]);
