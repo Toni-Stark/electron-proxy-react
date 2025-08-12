@@ -19,7 +19,6 @@ import './index.css'
 
 const { Content, Header } = Layout;
 
-let timer = null;
 
 class App extends Component {
   constructor(props) {
@@ -49,19 +48,12 @@ class App extends Component {
   }
   async componentDidMount() {
     this.regLoginStatus()
-    clearInterval(timer)
-    timer = null;
-    timer = setInterval(() => {
-      this.regLoginStatus()
-    }, 2000);
   }
   // 登录状态变更处理
   handleAuthChange = (isAuthenticated) => {
     this.setState({ isAuthenticated });
   };
   getOut = () => {
-    clearInterval(timer)
-    timer = null;
     removeToken()
     removeStorage('expired_time')
     this.setState({
