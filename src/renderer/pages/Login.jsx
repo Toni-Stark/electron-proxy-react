@@ -12,13 +12,13 @@ import 'antd/lib/input/style/index.css';
 import 'antd/lib/avatar/style/index.css';
 import 'antd/lib/message/style/index.css';
 
-import { setToken } from '../utils/auth';
+import {getStorage, setStorage, setToken} from '../utils/auth';
 import '../styles/Login.css'
 class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            token: ''
+            token: getStorage('recently_token') || '',
         }
         this.handleSubmit = this.handleSubmit.bind(this); // 手动绑定
         this.currentToken = this.currentToken.bind(this); // 手动绑定
@@ -39,6 +39,8 @@ class Login extends Component {
         this.setState({loading: false});
         message.success('登录成功');
         setToken(this.state.token)
+        setStorage('expired_time', res.data.expired_time)
+        setStorage('recently_token', this.state.token)
         this.props.onAuthChange(true)
     };
     currentToken = (e) => {

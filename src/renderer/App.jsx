@@ -6,7 +6,7 @@ import Sidebar from './components/Sidebar/index';
 import Dashboard from './pages/Dashboard';
 import Setting from './pages/Setting';
 import NotFound from './pages/NotFound';
-import {getToken, removeToken} from './utils/auth'
+import {getStorage, getToken, removeStorage, removeToken} from './utils/auth'
 import Login from "./pages/Login";
 import MeiTuanSpuList from "./pages/MeiTuanSpuList";
 import ElemeSpuList from "./pages/ElemeSpuList";
@@ -18,6 +18,8 @@ import EditableTagGroup from "./components/EditableTagGroup";
 import './index.css'
 
 const { Content, Header } = Layout;
+
+let timer = null;
 
 class App extends Component {
   constructor(props) {
@@ -37,12 +39,31 @@ class App extends Component {
     this.updateLinks = this.updateLinks.bind(this)
     this.getOut = this.getOut.bind(this)
   }
+  regLoginStatus=()=>{
+    let expired_time = getStorage('expired_time');
+    if (expired_time) {
+      if (new Date().getTime() > new Date(expired_time).getTime()) {
+        this.getOut()
+      }
+    }
+  }
+  async componentDidMount() {
+    this.regLoginStatus()
+    clearInterval(timer)
+    timer = null;
+    timer = setInterval(() => {
+      this.regLoginStatus()
+    }, 2000);
+  }
   // 登录状态变更处理
   handleAuthChange = (isAuthenticated) => {
     this.setState({ isAuthenticated });
   };
   getOut = () => {
+    clearInterval(timer)
+    timer = null;
     removeToken()
+    removeStorage('expired_time')
     this.setState({
       isAuthenticated: !!getToken(),
       links:[
