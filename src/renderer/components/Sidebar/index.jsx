@@ -178,10 +178,10 @@ class Sidebar extends Component {
                         }
                     </Menu>
                     <div className="proxy_status">
-                        <div className="proxy_status_title">端口<span>{port}</span></div>
-                        <div className="proxy_status_title">状态<span style={{color: running ? '#52c41a' : 'rgba(255,255,255,0.65)'}}>{ running ? '运行中' : '已停止' }</span></div>
+                        {/*<div className="proxy_status_title">端口<span>{port}</span></div>*/}
+                        {/*<div className="proxy_status_title">状态<span style={{color: running ? '#52c41a' : 'rgba(255,255,255,0.65)'}}>{ running ? '运行中' : '已停止' }</span></div>*/}
                         <div className="proxy_control">
-                            开启扫描
+                            抓取状态
                             <Switch
                                 checked={openProxy}
                                 onChange={(checked) => this.handleImmediateChange('openProxy', checked)}

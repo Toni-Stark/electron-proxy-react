@@ -34,13 +34,6 @@ const { Search } = Input;
 const { Option } = Select;
 const { confirm } = Modal;
 
-const TagElement = (platform, id) => {
-  if(platform === 'meituan'){
-    return (<Tag color="#ffbc26">品牌ID: {id}</Tag>)
-  } else if(platform === 'eleme'){
-    return (<Tag color="#028bf1">品牌ID: {id}</Tag>)
-  }
-}
 
 const DescriptionItem = ({ title, content }) => (
     <div
@@ -64,6 +57,13 @@ const DescriptionItem = ({ title, content }) => (
       {content}
     </div>
 );
+const getPlatformText = (platform) => {
+  if(platform === 'meituan'){
+    return <div className="posi_right meituan"><div className="text">美团</div></div>;
+  } else if (platform === 'eleme'){
+    return <div className="posi_right eleme"><div className="text">饿了么</div></div>;
+  }
+};
 class Dashboard extends Component {
   constructor(props) {
     super(props);
@@ -127,7 +127,9 @@ class Dashboard extends Component {
   changeTable = async (e) => {
     await this.getDataList({kw: this.state.kw, page: e, platform: this.state.value})
   }
-  showPreview = (imgUrl) => {
+  showPreview = (e, imgUrl) => {
+    e.preventDefault();  // 阻止默认行为
+    e.stopPropagation(); // 阻止冒泡
     this.setState({
       showPreview: true,
       currentImage: imgUrl
@@ -205,12 +207,13 @@ class Dashboard extends Component {
           </div>
           <div className="content">
             {
-              dataList.map((item, index)=>(
-                  <div className="card" key={item.id + item.brand_id + index} onClick={()=>this.naviToSpuList(item)}>
+              dataList.map((item, index)=> {
+                return (
+                  <div className="card" key={item.id + item.brand_id + index} onClick={(e)=>this.showDetailStore(e,item.id)}>
                     <div className="title">
                       <div className="main">
                         <div className="avatar_view">
-                          <Avatar onClick={()=>this.showPreview(item.logo)} shape="square" src={item.logo} size={40}/>
+                          <Avatar onClick={(e)=>this.showPreview(e, item.logo)} shape="square" src={item.logo} size={40}/>
                         </div>
                         <div className="avatar_title">
                           {item.name}
@@ -219,7 +222,7 @@ class Dashboard extends Component {
                     </div>
                     <div className="content_view">
                       <div className="content_tag">
-                        {TagElement(item.platform,item.brand_id)}
+                        <Tag color="#028bf1">品牌ID: {item.brand_id}</Tag>
                         <Tag color={item.status === 1 ? 'green' : 'red'}>状态: {item.status === 1 ? '正常' : '异常'}</Tag>
                       </div>
                       <div className="middle_label">店铺地址：<span>{item.address}</span></div>
@@ -227,14 +230,15 @@ class Dashboard extends Component {
                         <div className="middle_label">更新时间：<span>{item.updatedAt}</span></div>
                         {item?.distance?<div className="middle_label">距离：<span>{item.distance}</span></div>:null}
                       </div>
-                      <div className="posi_right"><div className="text">{item.id}</div></div>
+                      {getPlatformText(item.platform)}
                     </div>
                     <div className="footer_view">
-                      <Button className="button link" type="link" onClick={(e)=>this.showDetailStore(e,item.id)}>详情</Button>
+                      <Button className="button link" type="link" onClick={(e)=>this.naviToSpuList(item)}>商品详情</Button>
                       <Button className="button danger" type="danger" onClick={(e)=>this.showConfirm(e,item)}>删除</Button>
                     </div>
                   </div>
-              ))
+                )
+              })
             }
           </div>
           {total>0 ?

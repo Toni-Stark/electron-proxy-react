@@ -19,16 +19,18 @@
 }
 .content_view {
     flex: 1;
+    z-index: 10;
 }
 .content_tag {
-    margin-top: 6px;
     padding: 9px 9px 0;
+    z-index: 10;
 }
 .title {
     display: flex;
     width: 100%;
     align-items: center;
     padding: 0 9px 0;
+    z-index: 10;
 }
 .title .main {
     display: flex;
@@ -49,6 +51,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.card_light .main .avatar_title {
+    color: #214784;
+}
 .middle_label {
     font-size: 12px;
     margin-top: 6px;
@@ -58,6 +63,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    z-index: 10;
 }
 .middle_label span {
     color: #000c17;
@@ -69,23 +75,29 @@
     display: flex;
     padding: 0 9px 0;
     justify-content: space-between;
+    z-index: 10;
 }
 .posi_right {
     position: absolute;
-    width: 100px;
-    height: 35px;
+    height: 24px;
+    line-height: 24px;
     background: #217dcd;
     margin: 0;
     color: #ffffff;
     text-align: center;
-    transform: rotate(45deg);
-    right: -37px;
-    top: -9px;
+    right: 0;
+    top: 0px;
+    border-radius: 0 0 0 5px;
+    padding: 0 10px ;
+}
+.posi_right.meituan {
+    background: #ffc300;
+}
+.posi_right.eleme {
+    background: #0192ff;
 }
 .posi_right .text {
-    transform: rotate(-45deg);
-    margin-top: 10px;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
 }
 .footer_view {
@@ -97,15 +109,19 @@
 }
 
 .footer_view .button {
-    flex: 1;
     border: none;
     border-radius: 0;
     height: 32px;
     box-sizing: border-box;
 }
 .footer_view .button.link{
+    flex: 1;
     border-top: 1px solid #d9d9d9;
 }
 .footer_view .button.danger{
     border: 1px solid #ff4d4f;
+    width: 25%;
+}
+.ant-modal-body img {
+    background: #ffffff;
 }
