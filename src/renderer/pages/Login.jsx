@@ -12,7 +12,7 @@ import 'antd/lib/input/style/index.css';
 import 'antd/lib/avatar/style/index.css';
 import 'antd/lib/message/style/index.css';
 
-import { setToken } from '../utils/auth';
+import {getStorage, setStorage, setToken} from '../utils/auth';
 import '../styles/Login.css'
 class Login extends Component {
     constructor(props) {
@@ -39,6 +39,7 @@ class Login extends Component {
         this.setState({loading: false});
         message.success('登录成功');
         setToken(this.state.token)
+        setStorage('expired_time', res.data.epxired_time)
         this.props.onAuthChange(true)
     };
     currentToken = (e) => {
