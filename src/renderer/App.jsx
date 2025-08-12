@@ -16,6 +16,7 @@ import 'antd/lib/layout/style/index.css';
 import 'antd/lib/spin/style/index.css';
 import EditableTagGroup from "./components/EditableTagGroup";
 import './index.css'
+import message from "antd/lib/message";
 
 const { Content, Header } = Layout;
 
@@ -38,16 +39,16 @@ class App extends Component {
     this.updateLinks = this.updateLinks.bind(this)
     this.getOut = this.getOut.bind(this)
   }
-  regLoginStatus=()=>{
-    let expired_time = getStorage('expired_time');
-    if (expired_time) {
-      if (new Date().getTime() > new Date(expired_time).getTime()) {
-        this.getOut()
-      }
-    }
-  }
+   async regLoginStatus(){
+     let token = getToken();
+     const res = await window.drugApi.userLogin(token)
+     if(res.code != 200){
+       this.getOut();
+       return;
+     }
+   }
   async componentDidMount() {
-    this.regLoginStatus()
+    await this.regLoginStatus()
   }
   // 登录状态变更处理
   handleAuthChange = (isAuthenticated) => {

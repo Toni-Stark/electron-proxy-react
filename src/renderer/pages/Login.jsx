@@ -39,7 +39,6 @@ class Login extends Component {
         this.setState({loading: false});
         message.success('登录成功');
         setToken(this.state.token)
-        setStorage('expired_time', res.data.expired_time)
         setStorage('recently_token', this.state.token)
         this.props.onAuthChange(true)
     };
