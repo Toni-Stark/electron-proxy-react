@@ -3,6 +3,7 @@ const path = require('path')
 const url = require('url')
 const jobs = require('./jobs')
 const listener = require('./listener')
+const { stopProxy } = require('./component/proxy/anyproxy')
 
 // 保持对窗口对象的全局引用，如果不这样做，当JavaScript对象被垃圾回收时，窗口将自动关闭
 let mainWindow
