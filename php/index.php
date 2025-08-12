@@ -24,13 +24,13 @@ if(!isset($token_data[$token])) {
   renderJSON(-1, [], '密钥不正确，请重试');
 }
 
-$token_data[$token]['mechine_code'] = $machine_code;
-file_put_contents($token_file, json_encode($token_data));
-
 $token_info = $token_data[$token];
 
 if(strtotime($token_info['expird_time']) <= time()) {
   renderJSON(-1, [], '已过授权有效期');
 }
+
+$token_data[$token]['mechine_code'] = $machine_code;
+file_put_contents($token_file, json_encode($token_data));
 
 renderJSON(200, $token_data[$token]);
