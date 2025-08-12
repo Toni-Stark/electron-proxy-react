@@ -1,5 +1,5 @@
 <?php
-$token_file = 'KZKzuDPNxm5Mxrbw';
+$token_file = 'M6kbwLjkUukFpc5Yw9mX886WxuewGme6';
 
 function renderJSON($code = 0, $data = [], $msg = '') {
   exit(json_encode([
