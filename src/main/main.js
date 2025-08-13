@@ -1,9 +1,9 @@
-const { app, BrowserWindow, ipcMain, Menu } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, Notification } = require('electron')
 const path = require('path')
 const url = require('url')
 const jobs = require('./jobs')
 const listener = require('./listener')
-const { stopProxy } = require('./component/proxy/anyproxy')
+const { stopProxy, isAdmin } = require('./component/proxy/anyproxy')
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -57,7 +57,19 @@ function createWindow() {
 
 if(!gotTheLock) {
   app.quit()
-} else {
+}else if(!isAdmin() && process.env.NODE_ENV !== 'development'){
+  // 如果不是管理员. 并且环境不等于development. 就直接提示只能以管理员身份运行
+  app.whenReady().then(() => {
+    if (Notification.isSupported()) {
+        const notification = new Notification({
+            title: '警告',
+            body: '当前工具只能以管理员身份运行，请对准图标使用鼠标右键选择以管理员身份运行',
+        });
+        notification.show();
+    }
+    app.exit(); // 显示通知后可根据需求决定是否退出应用
+});
+}else{
   // Electron 会在初始化后并准备好创建浏览器窗口时调用这个函数
   // 部分 API 在 ready 事件触发后才能使用。
   app.on('ready', createWindow)
@@ -73,4 +85,3 @@ if(!gotTheLock) {
     if (mainWindow === null) createWindow()
   })
 }
-

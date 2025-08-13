@@ -83,14 +83,23 @@ function findCertStoreByName(cert_name) {
 // 生成默认证书（首次运行需要）
 async function generateDefaultCert() {
   try {
+    // 如果存在. 就直接打开. 没有就不管了.
     if(AnyProxy.utils.certMgr.ifRootCAFileExists()) {
+      const certDir = path.join(path.join(os.homedir(), '.anyproxy'), 'certificates')
+
+      if(/^win/.test(process.platform)) {
+        exec('start .', { cwd: certDir })
+      }else{
+        exec('open .', { cwd: certDir })
+      }
+
       return true
     }
 
     await AnyProxy.utils.certMgr.generateRootCA((error, keyPath) => {
       // let users to trust this CA before using proxy
       if (!error) {
-        const certDir = require('path').dirname(keyPath);
+        const certDir = path.dirname(keyPath);
         console.log('The cert is generated at', certDir);
         const isWin = /^win/.test(process.platform);
         if (isWin) {
@@ -107,7 +116,6 @@ async function generateDefaultCert() {
     return false
   } catch (e) {
     console.error('证书生成失败:', e)
-
     return false
   }
 }
@@ -130,7 +138,6 @@ async function startProxy() {
     // 判断证书是否安装. 如果没有安装. 则启动对应的这个数据.
     ensureCertDir()
 
-    
     // 检测证书是否安装到root了.
     let store = findCertStoreByName('AnyProxy')
 
@@ -189,5 +196,6 @@ module.exports = {
   startProxy,
   stopProxy,
   isProxyRunning,
+  isAdmin,
   getPort: () => proxyConfig.port
 }
