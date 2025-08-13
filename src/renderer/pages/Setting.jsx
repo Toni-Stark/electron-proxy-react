@@ -56,7 +56,7 @@ class Setting extends Component {
           if (success) {
             openMessage('success', '代理启动成功')
           } else {
-            openMessage('error', '代理启动失败，请查看控制台日志')
+            openMessage('error', '代理启动失败，请以管理员身份运行并安装证书')
           }
           await this.updateStatus()
         } else {
