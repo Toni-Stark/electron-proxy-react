@@ -48,6 +48,10 @@ export default function() {
   ipcMain.handle('user:login', async(e, token) => {
     return await login(token)
   })
+
+  ipcMain.handle('getVersion', async() => {
+    return process.env.npm_package_version
+  })
 }
 
 
