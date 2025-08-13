@@ -10,7 +10,7 @@ const eleme = require('./platform/eleme')
 
 const handleMeituan = (url, data) => {
   // 解析基础数据. 这里可以解析门店数据.
-  if(url.indexOf('/wxapp/v1/poi/food') > -1) {
+  if(url.indexOf('/wxapp/v1/poi/food') > -1 || url.indexOf('/mtweapp/v1/poi/food') > -1) {
     return meituan.parseFood(data)
   }
 

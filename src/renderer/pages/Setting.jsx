@@ -54,15 +54,15 @@ class Setting extends Component {
         if(value){
           const success = await window.drugApi.start()
           if (success) {
-            openMessage('success', '代理启动成功')
+            openMessage('success', '启动成功，请正常浏览小程序')
           } else {
-            openMessage('error', '代理启动失败，请查看控制台日志')
+            openMessage('error', '启动失败，请以管理员身份运行并安装证书至受信任的根证书颁发机构')
           }
           await this.updateStatus()
         } else {
           const success = await window.drugApi.stop()
           if (success) {
-            openMessage('info', '代理已停止')
+            openMessage('info', '已停止')
             await this.updateStatus()
           }
         }
