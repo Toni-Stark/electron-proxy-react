@@ -5,6 +5,7 @@ import Icon from 'antd/lib/icon'
 import Layout from 'antd/lib/layout'
 import notification from "antd/lib/notification";
 import Switch from "antd/lib/switch";
+import Button from "antd/lib/button";
 
 import 'antd/lib/menu/style/index.css';
 import 'antd/lib/button/style/index.css';
@@ -179,10 +180,12 @@ class Sidebar extends Component {
                     </Menu>
                     <div className="proxy_status">
                         {/*<div className="proxy_status_title">端口<span>{port}</span></div>*/}
-                        <div className="proxy_status_title">状态<span style={{color: running ? '#52c41a' : 'rgba(255,255,255,0.65)'}}>{ running ? '运行中' : '已停止' }</span></div>
+                        {/*<div className="proxy_status_title">状态<span style={{color: running ? '#52c41a' : 'rgba(255,255,255,0.65)'}}>{ running ? '开始工作' : '停止工作' }</span></div>*/}
                         <div className="proxy_control">
-                            {openProxy?'开始工作':'停止工作'}
+                            <div>工作状态</div>
                             <Switch
+                                checkedChildren="开始"
+                                unCheckedChildren="停止"
                                 checked={openProxy}
                                 onChange={(checked) => this.handleImmediateChange('openProxy', checked)}
                             />
