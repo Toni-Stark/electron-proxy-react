@@ -50,9 +50,9 @@ class App extends Component {
   async componentDidMount() {
     console.log(process.env.NODE_ENV)
     const res = await window.drugApi.isAdmin()
-    if(process.env.NODE_ENV !== 'production' && !res ){
+    if(process.env.NODE_ENV === 'production' && !res ){
       Modal.info({
-        title: '请使用管理员身份打开工具!',
+        title: '请使用管理员身份运行此工具!',
         okText: '确认',
         cancelButtonProps: { style: { display: 'none' } },
         onOk() {
