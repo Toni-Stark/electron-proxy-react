@@ -48,8 +48,9 @@ class App extends Component {
      }
    }
   async componentDidMount() {
+    console.log(process.env.NODE_ENV)
     const res = await window.drugApi.isAdmin()
-    if(!res){
+    if(process.env.NODE_ENV !== 'production' && !res ){
       Modal.info({
         title: '请使用管理员身份打开工具!',
         okText: '确认',
