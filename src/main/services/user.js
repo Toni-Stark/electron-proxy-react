@@ -33,6 +33,7 @@ export async function login(token) {
 
   return renderSuc({
     'expired_time': data.data.expired_time,
+    'version': data.data.version,
     'status': 1
   })
 }
