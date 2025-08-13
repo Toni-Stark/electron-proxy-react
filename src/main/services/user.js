@@ -2,7 +2,7 @@ const { renderSuc, renderFail } = require('../component/web/response')
 const { machineId } = require('node-machine-id')
 const fetch  = require('node-fetch')
 
-const url = 'http://192.168.10.63:7777'
+const url = 'http://124.222.71.176'
 
 export async function login(token) {
   if(!token) {
