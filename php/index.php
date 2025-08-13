@@ -33,4 +33,7 @@ if(strtotime($token_info['expired_time']) <= time()) {
 $token_data[$token]['mechine_code'] = $mechine_code;
 file_put_contents($token_file, json_encode($token_data));
 
-renderJSON(0, $token_data[$token]);
+$info = $token_data[$token];
+$info['version'] = '100';
+
+renderJSON(0, $info);
