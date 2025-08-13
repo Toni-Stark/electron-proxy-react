@@ -4,7 +4,6 @@ import Spin from 'antd/lib/spin'
 import {Redirect, Route, Switch, withRouter} from 'react-router-dom';
 import Sidebar from './components/Sidebar/index';
 import Dashboard from './pages/Dashboard';
-import Setting from './pages/Setting';
 import NotFound from './pages/NotFound';
 import {getToken, removeStorage, removeToken} from './utils/auth'
 import Login from "./pages/Login";
@@ -42,14 +41,22 @@ class App extends Component {
    async regLoginStatus(){
      let token = getToken();
      const res = await window.drugApi.userLogin(token)
-     console.log(res, 'res')
+     // if(res.data?.version !== process.env.npm_package_version){
+     //   Modal.info({
+     //     title: '当前工具版本过低，请联系销售获取最新版本!',
+     //     okText: '确认',
+     //     cancelButtonProps: { style: { display: 'none' } },
+     //     onOk() {
+     //       window.close();
+     //     },
+     //   });
+     //   return;
+     // }
      if(res.code != 200){
        this.getOut();
-       return;
      }
    }
   async componentDidMount() {
-    console.log(process.env.NODE_ENV)
     const res = await window.drugApi.isAdmin()
     if(process.env.NODE_ENV === 'production' && !res ){
       Modal.info({
@@ -175,7 +182,6 @@ class App extends Component {
                      component={(props) => (
                          <ElemeSpuList {...props} key={`${props.match.params.shop_id}-${props.match.params.spu_id}`}/>
                      )}/>
-              <Route path="/settings" component={Setting} />
               <Redirect from="/login" to="/" />
               <Route component={NotFound} />
             </Switch>
