@@ -1,5 +1,5 @@
 const { ipcMain } = require('electron')
-const { startProxy, stopProxy, isProxyRunning, getPort } = require('./component/proxy/anyproxy')
+const { startProxy, stopProxy, isProxyRunning, getPort, isAdmin } = require('./component/proxy/anyproxy')
 const { getStoreInfo, getStoreList, delStore } = require('./services/store')
 const { getSpuList, getSkuList } = require('./services/product')
 const { login } = require('./services/user')
@@ -12,6 +12,10 @@ export default function() {
 
   ipcMain.handle('proxy:stop', async () => {
     return await stopProxy()
+  })
+
+  ipcMain.handle('proxy:isAdmin', async () => {
+    return await isAdmin()
   })
 
   ipcMain.handle('proxy:status', () => {
