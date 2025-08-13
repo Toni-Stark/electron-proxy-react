@@ -62,7 +62,7 @@ class Setting extends Component {
         } else {
           const success = await window.drugApi.stop()
           if (success) {
-            openMessage('info', '代理已停止')
+            openMessage('info', '已停止')
             await this.updateStatus()
           }
         }
