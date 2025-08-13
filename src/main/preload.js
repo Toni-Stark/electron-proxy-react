@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('drugApi', {
+  version: () => ipcRenderer.invoke('getVersion'),
   start: () => ipcRenderer.invoke('proxy:start'),
   stop: () => ipcRenderer.invoke('proxy:stop'),
   getStatus: () => ipcRenderer.invoke('proxy:status'),
