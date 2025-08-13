@@ -10,16 +10,17 @@ import {getStorage, getToken, removeStorage, removeToken} from './utils/auth'
 import Login from "./pages/Login";
 import MeiTuanSpuList from "./pages/MeiTuanSpuList";
 import ElemeSpuList from "./pages/ElemeSpuList";
+import Modal from "antd/lib/modal";
 
 import 'antd/lib/button/style/index.css';
+import 'antd/lib/modal/style/index.css';
 import 'antd/lib/layout/style/index.css';
 import 'antd/lib/spin/style/index.css';
 import EditableTagGroup from "./components/EditableTagGroup";
 import './index.css'
-import message from "antd/lib/message";
+import Button from "antd/lib/button";
 
 const { Content, Header } = Layout;
-
 
 class App extends Component {
   constructor(props) {

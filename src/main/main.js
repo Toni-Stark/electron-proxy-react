@@ -53,11 +53,10 @@ function createWindow() {
 
   listener()
 }
-
-
+console.log(Notification.isSupported(),'Notification.isSupported()')
 if(!gotTheLock) {
   app.quit()
-}else if(!isAdmin() && process.env.NODE_ENV !== 'development'){
+}else if(!isAdmin() && process.env.NODE_ENV === 'development'){
   // 如果不是管理员. 并且环境不等于development. 就直接提示只能以管理员身份运行
   app.whenReady().then(() => {
     if (Notification.isSupported()) {

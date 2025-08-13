@@ -14,14 +14,20 @@ import 'antd/lib/message/style/index.css';
 
 import {getStorage, setStorage, setToken} from '../utils/auth';
 import '../styles/Login.css'
+import Modal from "antd/lib/modal";
 class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
             token: getStorage('recently_token') || '',
+            mainVis: false
         }
         this.handleSubmit = this.handleSubmit.bind(this); // 手动绑定
         this.currentToken = this.currentToken.bind(this); // 手动绑定
+    }
+
+    async componentDidMount() {
+        const res = await window.drugApi.userLogin(this.state.token)
     }
     handleSubmit = async () => {
         if (!this.state.token.trim()) {
@@ -81,6 +87,20 @@ class Login extends Component {
                         登录
                     </Button>
                 </div>
+                <Modal
+                    title="请以管理员身份运行工具"
+                    visible={mainVis}
+                    okText="确认"
+                    footer={[
+                        <Button key="submit" type="primary" onClick={this.onClose}>
+                            确认
+                        </Button>
+                    ]}
+                >
+                    <p>Bla bla ...</p>
+                    <p>Bla bla ...</p>
+                    <p>Bla bla ...</p>
+                </Modal>
             </div>
         );
     }
