@@ -42,6 +42,7 @@ class App extends Component {
    async regLoginStatus(){
      let token = getToken();
      const res = await window.drugApi.userLogin(token)
+     console.log(res, 'res')
      if(res.code != 200){
        this.getOut();
        return;
