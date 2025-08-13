@@ -41,18 +41,20 @@ class App extends Component {
    async regLoginStatus(){
      let token = getToken();
      const res = await window.drugApi.userLogin(token)
-     // if(res.data?.version !== process.env.npm_package_version){
-     //   Modal.info({
-     //     title: '当前工具版本过低，请联系销售获取最新版本!',
-     //     okText: '确认',
-     //     cancelButtonProps: { style: { display: 'none' } },
-     //     onOk() {
-     //       window.close();
-     //     },
-     //   });
-     //   return;
-     // }
-     if(res.code != 200){
+     const version = await window.drugApi.version(token)
+     console.log(version, res)
+     if(res.data.version && version !== res.data.version){
+       Modal.info({
+         title: '当前工具版本过低，请联系销售获取最新版本!',
+         okText: '确认',
+         cancelButtonProps: { style: { display: 'none' } },
+         onOk() {
+           window.close();
+         },
+       });
+       return;
+     }
+     if(res.code !== 200){
        this.getOut();
      }
    }
