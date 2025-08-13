@@ -45,7 +45,7 @@ class App extends Component {
      console.log(version, res)
      if(res.data.version && version !== res.data.version){
        Modal.info({
-         title: '当前工具版本过低，请联系销售获取最新版本!',
+         title: `当前工具版本:${version}过低，请联系销售获取最新版本!`,
          okText: '确认',
          cancelButtonProps: { style: { display: 'none' } },
          onOk() {
