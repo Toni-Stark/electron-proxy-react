@@ -1,6 +1,6 @@
 {
   "name": "yaodiandiaoyangongu",
-  "version": "100",
+  "version": "1.0.0",
   "description": "药店020商圈调研工具",
   "main": "dist/main/main.js",
   "homepage": "/",
