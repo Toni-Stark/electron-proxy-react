@@ -5,7 +5,9 @@ import Button from 'antd/lib/button'
 import Input from 'antd/lib/input'
 import Avatar from 'antd/lib/avatar'
 import message from 'antd/lib/message'
+import Modal from "antd/lib/modal";
 
+import 'antd/lib/modal/style/index.css';
 import 'antd/lib/icon/style/index.css';
 import 'antd/lib/button/style/index.css';
 import 'antd/lib/input/style/index.css';
@@ -22,6 +24,10 @@ class Login extends Component {
         }
         this.handleSubmit = this.handleSubmit.bind(this); // 手动绑定
         this.currentToken = this.currentToken.bind(this); // 手动绑定
+    }
+
+    async componentDidMount() {
+
     }
     handleSubmit = async () => {
         if (!this.state.token.trim()) {
@@ -49,7 +55,7 @@ class Login extends Component {
         })
     }
     render() {
-        const {token,loading} = this.state;
+        const {token,loading,mainVis} = this.state;
         return (
             <div style={{...flexCenter}} className="bg_style">
                 <div style={{marginTop: '20vh', minWidth: 350}}>
