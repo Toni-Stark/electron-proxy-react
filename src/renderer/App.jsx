@@ -6,11 +6,10 @@ import Sidebar from './components/Sidebar/index';
 import Dashboard from './pages/Dashboard';
 import Setting from './pages/Setting';
 import NotFound from './pages/NotFound';
-import {getStorage, getToken, removeStorage, removeToken} from './utils/auth'
+import {getToken, removeStorage, removeToken} from './utils/auth'
 import Login from "./pages/Login";
 import MeiTuanSpuList from "./pages/MeiTuanSpuList";
 import ElemeSpuList from "./pages/ElemeSpuList";
-import Modal from "antd/lib/modal";
 
 import 'antd/lib/button/style/index.css';
 import 'antd/lib/modal/style/index.css';
@@ -18,7 +17,7 @@ import 'antd/lib/layout/style/index.css';
 import 'antd/lib/spin/style/index.css';
 import EditableTagGroup from "./components/EditableTagGroup";
 import './index.css'
-import Button from "antd/lib/button";
+import Modal from "antd/lib/modal";
 
 const { Content, Header } = Layout;
 
@@ -49,6 +48,17 @@ class App extends Component {
      }
    }
   async componentDidMount() {
+    const res = await window.drugApi.isAdmin()
+    if(!res){
+      Modal.info({
+        title: '请使用管理员身份打开工具!',
+        okText: '确认',
+        cancelButtonProps: { style: { display: 'none' } },
+        onOk() {
+          window.close();
+        },
+      });
+    }
     await this.regLoginStatus()
   }
   // 登录状态变更处理
