@@ -26,6 +26,12 @@ const ShopTag = sequelize.define('ShopTag', {
     allowNull: false,
     defaultValue: '',
   },
+  parent_tag: {
+    type: DataTypes.STRING,
+    comment: 'Parent Tag',
+    allowNull: false,
+    defaultValue: '',
+  },
   tag_text: {
     type: DataTypes.STRING,
     allowNull: false,

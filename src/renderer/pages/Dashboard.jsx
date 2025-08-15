@@ -106,10 +106,13 @@ class Dashboard extends Component {
   }
 
   naviToSpuList = (info) => {
+    const shop_name = info.platform === 'meituan' 
+      ? '[美团]' + info.name
+      : '[饿了么]' + info.name
     if(info.platform === 'meituan'){
-      this.props.updateLinks({type: 'add', key: '/meituan/spuList', name: info.name, hash: `/${info.id}/${info.brand_id}`});
+      this.props.updateLinks({type: 'add', key: '/meituan/spuList', name: shop_name, hash: `/${info.id}/${info.brand_id}`});
     } else if (info.platform === 'eleme'){
-      this.props.updateLinks({type: 'add', key: '/eleme/spuList', name: info.name, hash: `/${info.id}/${info.brand_id}`});
+      this.props.updateLinks({type: 'add', key: '/eleme/spuList', name: shop_name, hash: `/${info.id}/${info.brand_id}`});
     }
   }
   onClose = () => {

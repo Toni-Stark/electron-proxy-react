@@ -26,10 +26,10 @@ function getDataFromUrl(url) {
   }
 }
 
-
 function parseSpu(third_id, cate_foods_list) {
   let spu_list = []
   let sku_list = []
+  let shop_spu_tag_list = []
 
   cate_foods_list.map((cate_foods) => {
     const foods = cate_foods.foods
@@ -58,7 +58,18 @@ function parseSpu(third_id, cate_foods_list) {
         // 不看折扣价格.
         single_standard_price: parseFloat(currentPrice.priceText),
         underline_price: parseFloat(originalPrice.priceText),
-        tag: cateId
+        tag: spu.item.shopCategoriesIdList
+      })
+
+      const cate_id_list = cateId != spu.item.shopCategoriesIdList ? [cateId, spu.item.shopCategoriesIdList] : [spu.item.shopCategoriesIdList]
+      
+      cate_id_list.map((tag) => {
+        shop_spu_tag_list.push({
+          platform: PLATFORM_ELEME,
+          third_id: third_id,
+          spu_id: spu.item.itemId,
+          tag: tag,
+        })
       })
 
       sku_list.push({
@@ -71,7 +82,7 @@ function parseSpu(third_id, cate_foods_list) {
         price: parseFloat(currentPrice.priceText),
         origin_price: parseFloat(originalPrice.priceText),
         // 折扣价格.
-        discount_price: parseFloat(currentPrice.discountFeeText),
+        discount_price: parseFloat(currentPrice.discountFeeText) || 0.0,
         stock: spu.item.stockModel.quantity,
         real_stock: spu.item.stockModel.quantity,
         activity_stock: spu.item.stockModel.quantity,
@@ -86,7 +97,8 @@ function parseSpu(third_id, cate_foods_list) {
 
   return {
     spu_list,
-    sku_list
+    sku_list,
+    shop_spu_tag_list
   }
 }
 
@@ -97,8 +109,8 @@ const parseShop = function(data) {
   // 开始解析店铺数据. 和一些基本数据. 这里先直接写到表里面  后面考虑队列吧.
   // 先看效果.
   const info = JSON.parse(data.body)
-
-  if(parseInt(info.data.errorCode) != 0) {
+  
+  if(!info.data || parseInt(info.data.errorCode) != 0) {
     return false
   }
 
@@ -131,19 +143,39 @@ const parseTags = function(data) {
   // 需要解析storeId. 这里从url里面获取就可以了.
   const req_data = getDataFromUrl(data.url)
 
-  if(parseInt(info.data.errorCode) != 0 || !req_data.storeId) {
+  if(!info.adta || parseInt(info.data.errorCode) != 0 || !req_data.storeId) {
     console.log('parse store id fail, url: ' + data.url)
     return false
   }
 
+  let tag_list = []
+
   // 开始解析tag.
-  let tag_list = info.data.data.catInfoList.map((item, idx) => {
-    return {
+  info.data.data.catInfoList.map((item, idx) => {
+    tag_list.push({
       platform: PLATFORM_ELEME,
       third_id: req_data.storeId,
       tag: item.catId,
       sequence: idx,
-      tag_text: item.name
+      tag_text: item.name,
+      parent_tag: '',
+    })
+
+    // 意味着有二级分类.
+    if(item.detail && item.detail.length > 0) {
+      item.detail.map((sub_cat) => {
+        tag_list.push({
+          platform: PLATFORM_ELEME,
+          third_id: req_data.storeId,
+          tag: sub_cat.catId,
+          sequence: idx,
+          tag_text: sub_cat.name,
+          parent_tag: item.catId,
+        })
+      })
+    }
+    return {
+      
     }
   });
 
@@ -161,6 +193,7 @@ const parseSpuPage = function(data) {
   const info = JSON.parse(data.body)
 
   const req_data = getDataFromUrl(data.url)
+
   if(!info.data || parseInt(info.data.errorCode) != 0 || !req_data.storeId) {
     return false
   }

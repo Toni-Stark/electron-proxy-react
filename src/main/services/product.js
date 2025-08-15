@@ -1,3 +1,6 @@
+import ShopSpuTag from '../models/shop_spu_tag'
+import ShopTag from '../models/shop_tag'
+
 const ShopSpu = require('../models/shop_spu')
 const Shop = require('../models/shop')
 const ShopSku = require('../models/shop_sku')
@@ -74,7 +77,7 @@ export async function getSkuListBySpuId(shop_id, spu_id) {
 }
 
 // 这里的方式肯定是需要进行一些操作的.
-export async function getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_export = 0) {
+export async function getSkuList(shop_id, tag_id = '', kw = '', page = 1, is_export = 0) {
   page = !page ? 1 : parseInt(page)
 
   const store = await Shop.findOne({
@@ -96,29 +99,44 @@ export async function getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_exp
   let spu_id_list = []
 
   if(kw) {
-    spu_id_list = await ShopSpu.findAll({
-      where: {
-        name: {
-          [Op.like]: '%' + kw + '%'
-        },
-        third_id: store.third_id,
-        platform: store.platform
-      },
-      attributes: ['spu_id'],
-      raw: true
-    })
-
-    if(spu_id_list.length > 0) {
-      spu_id_list = spu_id_list.map((item) => {
-        return item.spu_id
-      })
-    }else{
-      spu_id_list = ['-1']
+    cond['name'] = {
+      [Op.like]: '%' + kw + '%'
     }
   }
 
-  if(spu_id) {
-    spu_id_list.push(spu_id)
+  if(tag_id) {
+    let tags = await ShopTag.findAll({
+      where: {
+        third_id: store.third_id,
+        platform: store.platform,
+        [Op.or]: {
+          parent_tag: tag_id,
+          tag: tag_id
+        }
+      }
+    })
+
+    let tag_id_list = tags ? tags.map((item) => {
+      return item.tag
+    }) : ['-1']
+
+    const shop_spu_tag_list = await ShopSpuTag.findAll({
+      where: {
+        third_id: store.third_id,
+        platform: store.platform,
+        tag: {
+          [Op.in]: tag_id_list
+        }
+      },
+      raw: true
+    })
+    
+    if(shop_spu_tag_list.length) {
+      spu_id_list = spu_id_list.concat(shop_spu_tag_list.map(item => item.spu_id))
+      // 再搜索一次
+    }else{
+      spu_id_list = ['-1']
+    }
   }
   
   // 处理一个组合查询情况.
@@ -128,19 +146,19 @@ export async function getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_exp
     }
   }
 
-  const total = await ShopSku.count({
+  const total = await ShopSpu.count({
     where: cond
   })
 
-  let sku_list = []
+  let spu_list
 
   if(is_export) {
-    sku_list = await ShopSku.findAll({
+    spu_list = await ShopSpu.findAll({
       where: cond,
       raw: true,
     })
   }else{
-    sku_list = await ShopSku.findAll({
+    spu_list = await ShopSpu.findAll({
       where: cond,
       raw: true,
       offset: (page - 1) * PAGE_SIZE,
@@ -151,12 +169,12 @@ export async function getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_exp
   let render_data = []
 
   // 这里要去查找spu的信息 然后组合数据出来给前台用.
-  if(sku_list) {
+  if(spu_list) {
     // 这里要重新查一次. 按照店铺名称. 
-    const spu_list = await ShopSpu.findAll({
+    const sku_list = await ShopSku.findAll({
       where: {
         spu_id: {
-          [Op.in]: sku_list.map((item) => {
+          [Op.in]: spu_list.map((item) => {
             return item.spu_id
           })
         },
@@ -166,15 +184,48 @@ export async function getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_exp
       raw: true,
     })
 
-    let spu_map = {}
-    // 换算一下. 开始拼凑数据了.
-    for(let i = 0; i < spu_list.length; i++) {
-      spu_map[spu_list[i].spu_id] = spu_list[i]
+    let tag_id_list = []
+
+    spu_list.map((item) => {
+      let sup_tag = item.tag.split(',')
+
+      tag_id_list = tag_id_list.concat(sup_tag)
+    })
+
+    const tag_list = await ShopTag.findAll({
+      where: {
+        tag: {
+          [Op.in]: tag_id_list
+        },
+        third_id: store.third_id,
+        platform: store.platform
+      },
+      raw: true
+    })
+
+    let tag_map = {}
+
+    if(tag_list) {
+      for(let i = 0; i < tag_list.length;i++) {
+        tag_map[tag_list[i].tag] = tag_list[i].tag_text
+      }
     }
 
-    sku_list.map((item) => {
-      let spu = spu_map[item.spu_id] ? spu_map[item.spu_id] : {}
-      
+    spu_list.map((item) => {
+      let current_skus = sku_list.filter((sku) => sku.spu_id == item.spu_id) || []
+      let spu_tag_id_list = item.tag.split(',')
+      let tag_names = []
+
+      for(let i = 0; i < spu_tag_id_list.length; i++) {
+        let tmp_tag_id = spu_tag_id_list[i]
+        let tag = tag_map[tmp_tag_id] ? tag_map[tmp_tag_id] : ''
+        if(!tag) {
+          continue
+        }
+
+        tag_names.push(tag)
+      }
+
       // 开始拼凑.
       render_data.push({
         // 店铺名称
@@ -184,29 +235,34 @@ export async function getSkuList(shop_id, spu_id = '', kw = '', page = 1, is_exp
         // 店铺的logo图片
         shop_picture: store.logo,
         // 药品名称
-        product_name: spu ? spu.name : '',
+        product_name: item ? item.name : '',
         // 药品图片
-        spu_picture: spu ? spu.picture : '',
+        spu_picture: item ? item.picture : '',
         // 规格标签
-        sku_label: spu ? spu.sku_name : '',
-        // 规格名称
-        sku_name: item.name,
-        // 价格
-        price: item.price,
-        // 原价
-        origin_price: item.origin_price,
-        // 库存
-        stock: item.stock,
-        // sku图片
-        sku_picture: item.picture,
-        // 最小购买数
-        min_order_count: item.min_order_count,
+        sku_label: item ? item.sku_name : '',
+        // 销量
+        month_saled: item.month_saled_num ? item.month_saled_num.replace('月售', '') : item.month_saled_num,
+        // 更新时间
+        updated_time: item.updatedAt,
+        // 分类.
+        sku_items: current_skus.map((sku) => {
+          return {
+            sku_name: sku.name,
+            price: sku.price,
+            origin_price: sku.origin_price,
+            stock: sku.stock,
+            picture: sku.picture,
+            min_order_count: sku.min_order_count,
+            upccode: sku.upccode
+          }
+        }),
+        tag_name: tag_names.join(',')
       })
     })
   }
 
   return renderSuc({
-    sku_list: render_data,
+    render_data: render_data,
     total
   })
 }

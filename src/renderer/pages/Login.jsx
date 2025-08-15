@@ -28,7 +28,7 @@ class Login extends Component {
 
     handleSubmit = async () => {
         if (!this.state.token.trim()) {
-            message.warning('请输入Token');
+            message.warning('请输入登录密钥');
             return;
         }
 

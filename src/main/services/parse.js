@@ -70,7 +70,7 @@ export async function handle(platform, url, data) {
     shop.set(parse_data.shop_info)
     await shop.save()
   }
-
+  
   // 保存标签分类
   if(parse_data.tag_list) {
     for(let i = 0; i < parse_data.tag_list.length; i++) {

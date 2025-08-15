@@ -30,10 +30,14 @@ if(strtotime($token_info['expired_time']) <= time()) {
   renderJSON(-1, [], '已过授权有效期');
 }
 
+if($token_info['mechine_code'] && $token_info['mechine_code'] != $mechine_code) {
+  renderJSON(-1, [], '当前密钥已经被人绑定，请勿多次绑定密钥');
+}
+
 $token_data[$token]['mechine_code'] = $mechine_code;
 file_put_contents($token_file, json_encode($token_data));
 
 $info = $token_data[$token];
-$info['version'] = '100';
+$info['version'] = '1.0.0';
 
 renderJSON(0, $info);

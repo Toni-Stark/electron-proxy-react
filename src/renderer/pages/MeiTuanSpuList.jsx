@@ -2,39 +2,45 @@ import React, { Component } from 'react';
 import ImagePreviewModal from "../components/ImagePreview";
 import * as XLSX from 'xlsx';
 import saveAs from 'file-saver';
+import { getTimes, formatDate } from '../utils/tools';
 
 import Table from 'antd/lib/table'
 import Button from 'antd/lib/button'
 import Input from 'antd/lib/input'
 import Avatar from 'antd/lib/avatar'
 import message from 'antd/lib/message'
+import Tag from 'antd/lib/tag'
+import Select from 'antd/lib/select'
 
 import 'antd/lib/table/style/index.css';
 import 'antd/lib/button/style/index.css';
 import 'antd/lib/input/style/index.css';
 import 'antd/lib/avatar/style/index.css';
 import 'antd/lib/message/style/index.css';
+import 'antd/lib/tag/style/index.css';
+import 'antd/lib/select/style/index.css';
+
 
 import '../styles/MeiTuanSpuList.css'
 
 const { Search } = Input;
 
 
-const columnsKeys = {
-    // shop_name: '店铺名称',
-    // shop_address: '店铺地址',
-    // shop_picture: '店铺logo',
+const handleExport = async (fileName, data) => {
+  // 仅仅用于导出.
+  const columnsKeys = {
     product_name: '药品名称',
-    // spu_picture: '药品图片',
+    tag_name: '分类',
+    month_saled: '月售',
     sku_label: '规格标签',
     sku_name: '规格名称',
+    upccode: '69码',
     price: '价格',
     origin_price: '原价',
     stock: '库存',
-    // sku_picture: 'sku图片',
-    min_order_count: '最小购买数',
-}
-const handleExport = async (fileName, data) => {
+    updated_time: '更新时间'
+  }
+
   try {
     if (!data || data.length === 0) {
       message.warning('没有可导出的数据');
@@ -91,6 +97,7 @@ class MeiTuanSpuList extends Component {
     super(props);
     this.state = {
       dataList: [],
+      cate_list: [],
       total: 0,
       kw: '',
       page: 1,
@@ -99,8 +106,8 @@ class MeiTuanSpuList extends Component {
       drawInfo: {},
       showPreview: false,
       currentImage: '',
-      spu_id: '',
       shop_id: '',
+      tag_id: '',
     };
     this.getDataList = this.getDataList.bind(this); // 手动绑定
     this.uploadAllData = this.uploadAllData.bind(this); // 手动绑定
@@ -108,46 +115,83 @@ class MeiTuanSpuList extends Component {
     this.changeTable = this.changeTable.bind(this); // 手动绑定
   }
 
-  async getDataList({spu_id, shop_id, page, kw = '',is_export = 0}){
-    let spu = spu_id || this.state.spu_id;
+  async getDataList({tag_id, shop_id, page, kw = '',is_export = 0}){
+    let tag = tag_id || this.state.tag_id;
     let shop = shop_id || this.state.shop_id;
-    const res = await window.drugApi.getSkuList(shop, spu, kw, page, is_export)
-    let list = res.data.sku_list.map((item, index)=>{
-      return {...item, key: index+1+''}
+    const res = await window.drugApi.getSkuList(shop, tag, kw, page, is_export)
+    // 组合数据.
+    let list = this.buildRenderData(res.data.render_data).map((item, index) => {
+      return {...item, key: index + 1 + ''}
     })
+
+    let cate_res = await window.drugApi.storeCates(shop)
+    let cate_list = cate_res.code === 200 ? cate_res.data : []
+
     this.setState({
-      dataList: list,
+      dataList: [...list],
       total: res.data.total,
       page: page,
       kw: kw,
       shop_id: shop,
-      spu_id: spu,
+      tag_id: tag,
+      cate_list: cate_list,
     })
   }
 
+  buildRenderData(spu_list) {
+    let product_list = []
+
+    spu_list.map((spu) => {
+      spu.sku_items.map((sku, idx) => {
+        product_list.push({
+          shop_name: spu.shop_name,
+          spu_picture: spu.spu_picture,
+          product_name: spu.product_name,
+          month_saled: spu.month_saled,
+          sku_label: spu.sku_label,
+          sku_name: sku.sku_name,
+          sku_picture: sku.picture,
+          stock: sku.stock,
+          price: sku.price,
+          origin_price: sku.origin_price,
+          min_order_count: sku.min_order_count,
+          upccode: sku.upccode,
+          tag_name: spu.tag_name,
+          row_span: idx === 0 && spu.sku_items.length > 1 ? spu.sku_items.length : (spu.sku_items.length === 1 ? 1 : 0),
+          updated_time: getTimes(spu.updated_time)
+        })
+      })
+    })
+
+    return product_list
+  }
+
   async uploadAllData(){
-    let spu = this.state.spu_id;
+    let tag = this.state.tag_id;
     let shop = this.state.shop_id;
     this.setState({
       loading: true
     })
-    const res = await window.drugApi.getSkuList(shop, spu, '', 1, 1)
-    let list = res.data?.sku_list;
+    const res = await window.drugApi.getSkuList(shop, tag, this.state.kw || '', 1, 1)
+    let list = this.buildRenderData(res.data.render_data ? res.data.render_data: []);
     if(list?.length<=0){
       message.warning('没有可导出的数据')
       return;
     }
-    await handleExport(list[0].shop_name,list)
+    const filename = ['[美团]' + list[0].shop_name, formatDate(new Date())].join('_') + '.xlsx'
+    await handleExport(filename, list)
     this.setState({
       loading: false
     })
   }
+
   refreshFun = async() => {
     this.setState({ refresh: true });
     await this.getDataList({ page: 1, kw: this.state.kw})
     message.success('刷新成功');
     this.setState({ refresh: false });
   }
+
   onClose = () => {
     this.setState({
       visible: false,
@@ -155,16 +199,22 @@ class MeiTuanSpuList extends Component {
     });
   }
 
+  onSelectChange = (tag_id) => {
+    this.setState({
+      tag_id: tag_id
+    })
+  }
+
   async componentDidMount() {
-    const { shop_id, spu_id } = this.props.match.params;
-    await this.getDataList({shop_id, page: 1})
+    const { shop_id, tag_id } = this.props.match.params;
+    await this.getDataList({shop_id, page: 1, tag_id})
   }
 
   handleSearch = async (e) => {
-    await this.getDataList({kw: e})
+    await this.getDataList({kw: e, tag_id: this.state.tag_id})
   }
   changeTable = async (e) => {
-    await this.getDataList({kw: this.state.kw, page: e})
+    await this.getDataList({kw: this.state.kw, page: e, tag_id: this.state.tag_id})
   }
   showPreview = (imgUrl) => {
     this.setState({
@@ -178,39 +228,17 @@ class MeiTuanSpuList extends Component {
   render() {
     // 表格列定义
     const columns = [
-      // {
-      //   title: '序号',
-      //   dataIndex: 'key',
-      //   key: 'key',
-      //   width: 28
-      // },
-      // {
-      //   title: '店铺名称',
-      //   dataIndex: 'shop_name',
-      //   key: 'shop_name',
-      //   width: 100
-      // },
-      // {
-      //   title: '店铺地址',
-      //   dataIndex: 'shop_address',
-      //     key: 'shop_address',
-      //     width: 200
-      // },
-      // {
-      //   title: '店铺logo',
-      //   dataIndex: 'shop_picture',
-      //   key: 'shop_picture',
-      //   render: (logo) => {
-      //     return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
-      //   },
-      //   width: 65
-      // },
       {
         title: '药品图片',
         dataIndex: 'spu_picture',
         key: 'spu_picture',
-        render: (logo) => {
-          return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
+        render: (logo, row) => {
+          return {
+            children: <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>,
+            props: {
+              rowSpan: row.row_span || 0
+            }
+          }
         },
         width: 55,
         minWidth: 55,
@@ -220,19 +248,57 @@ class MeiTuanSpuList extends Component {
         title: '药品名称',
         dataIndex: 'product_name',
         key: 'product_name',
-        width: 200
+        width: 250,
+        render: (val, row) => {
+          return {
+            children: (
+              <div>
+                <div>{val}</div>
+                <div>
+                  {row.tag_name && <span><Tag color="blue">{row.tag_name}</Tag></span>}
+                  {row.upccode && <span><Tag color="green">{row.upccode}</Tag></span>}
+                </div>
+              </div>
+            ),
+            props: {
+              rowSpan: row.row_span || 0
+            }
+          }
+        },
+      },
+      {
+        title: '月售',
+        dataIndex: 'month_saled',
+        key: 'month_saled',
+        width: 50,
+        render: (val, row) => {
+          return {
+            children: val,
+            props: {
+              rowSpan: row.row_span || 0
+            }
+          }
+        },
       },
       {
         title: '规格标签',
         dataIndex: 'sku_label',
         key: 'sku_label',
-        width: 90
+        width: 90,
+        render: (val, row) => {
+          return {
+            children: val,
+            props: {
+              rowSpan: row.row_span || 0
+            }
+          }
+        },
       },
       {
         title: '规格名称',
         dataIndex: 'sku_name',
         key: 'sku_name',
-        width: 90
+        width: 90,
       },
       {
         title: '价格',
@@ -252,39 +318,34 @@ class MeiTuanSpuList extends Component {
         key: 'stock',
         width: 42,
       },
-        // {
-        //   title: 'sku图片',
-        //   dataIndex: 'sku_picture',
-        //   key: 'sku_picture',
-        //   render: (logo) => {
-        //     return <Avatar onClick={()=>this.showPreview(logo)} shape="square" src={logo} size={40}/>
-        //   },
-        //   width: 65
-        // },
       {
-        title: '最小购买数',
-        dataIndex: 'min_order_count',
-        key: 'min_order_count',
-        width: 65,
-      },
-      // {
-      //   title: '操作',
-      //   key: 'action',
-      //   fixed: 'right',
-      //   width: 100,
-      //   render: (info, record) => (
-      //       <div size="middle" style={{display: 'flex'}}>
-      //         <Button onClick={()=>this.showDetail(info)}>详情</Button>
-      //       </div>
-      //   ),
-      // },
+        title: '更新时间',
+        dataIndex: 'updated_time',
+        key: 'updated_time',
+        width: 100,
+      }
     ];
-    const {dataList, refresh,page, total, loading,currentImage,showPreview} = this.state;
+
+    const {dataList, cate_list, refresh, page, total, loading, currentImage, showPreview} = this.state;
 
     return (
       <div style={divStyle}>
         <div style={{...flexView,justifyContent: 'space-between'}}>
           <div style={flexView}>
+            <Select
+              showSearch
+              style={{ width: 200 }}
+              placeholder="请选择分类"
+              optionFilterProp="children"
+              onChange={this.onSelectChange}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              { cate_list.map((cate) => {
+                return <Select.Option key={cate.tag} value={cate.tag}>{cate.tag_text}</Select.Option>
+              }) }
+            </Select>,
             <Search
                 style={{minWidth: 280,width: 280}}
                 placeholder="请输入药品名称"
