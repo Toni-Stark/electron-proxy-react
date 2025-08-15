@@ -26,9 +26,6 @@ class Login extends Component {
         this.currentToken = this.currentToken.bind(this); // 手动绑定
     }
 
-    async componentDidMount() {
-
-    }
     handleSubmit = async () => {
         if (!this.state.token.trim()) {
             message.warning('请输入Token');

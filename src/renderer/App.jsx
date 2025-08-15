@@ -41,8 +41,7 @@ class App extends Component {
    async regLoginStatus(){
      let token = getToken();
      const res = await window.drugApi.userLogin(token)
-     const version = await window.drugApi.version(token)
-     console.log(version, res)
+     const version = await window.drugApi.version()
      if(res.data.version && version !== res.data.version){
        Modal.info({
          title: `当前工具版本:${version}过低，请联系销售获取最新版本!`,

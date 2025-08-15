@@ -50,7 +50,7 @@ export default function() {
   })
 
   ipcMain.handle('getVersion', async() => {
-    return process.env.npm_package_version
+    return '1.0.0'
   })
 }
 
